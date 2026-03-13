@@ -169,21 +169,26 @@ The `$metadata.modeName` field inside each file must match the file name (withou
 
 ## Scoping Instructions for User (End of Generation)
 
-Tell the user which collections to **turn off scoping** on (hide from variable pickers) based on their layer choice. In Figma: right-click the collection → "Hide from publishing" is separate — for picker visibility, go to each variable and change its scopes to collections that are intermediate chains.
+Tell the user which collections to **turn off scoping** on (hide from variable pickers) based on their layer choice and whether optional collections act purely as alias parents. 
+
+**CRITICAL FIGMA BUG:** "No scope" variables in JSON default to "all scopes" upon import. Users must manually turn off scoping (select all variables → remove all scopes) for intermediate parent collections.
 
 The general rule: **only TIP collections should appear in pickers.** Hide intermediate collections.
 
 | Layer | Hide from picker | Keep visible (tips) |
 |---|---|---|
 | 1-layer | Nothing | Primitives |
-| 2-layer | Primitives only | Theme, Typography, Responsive, Density, Layout, Effects |
-| 3-layer | Primitives + Theme (suggested) | Component Colors, Component Dimensions, Typography, Responsive, Density, Layout, Effects |
-| 4-layer | Primitives + Theme + Semantic (suggested) | Component Colors, Component Dimensions, Typography, Responsive, Density, Layout, Effects |
+| 2-layer | Primitives, Responsive*, Density* | Theme, Typography, Layout, Effects, Component Dimensions* |
+| 3-layer | Primitives, Theme (suggested), Responsive*, Density* | Component Colors, Component Dimensions, Typography, Layout, Effects |
+| 4-layer | Primitives, Theme (suggested), Semantic (suggested), Responsive*, Density* | Component Colors, Component Dimensions, Typography, Layout, Effects |
+
+*\*If generated.*
 
 **Key notes:**
-- 2-layer: Theme IS the colour tip (no Component Colors). Only hide Primitives.
-- 3/4-layer: Suggestions only — tell user to verify and re-enable scoping on any intermediate collection they need direct access to.
-- "Hide from publishing" (library sharing) is different from picker visibility (scope control per variable). Both should be set correctly — the JSON already handles Primitives `hiddenFromPublishing: true`.
+- 1-layer: Primitives is the only collection. Never turn it off here.
+- 2-layer: Theme IS the colour tip (no Component Colors). Only hide Primitives (and structural parents).
+- 3/4-layer: Hiding Theme and Semantic are suggestions only — tell user to verify and keep scoping ON if they apply those tokens directly to layers instead of going through Component Colors.
+- "Hide from publishing" (library sharing) is different from picker visibility (scope control per variable). Both should be set correctly — the JSON already handles Primitives `hiddenFromPublishing: true` naturally.
 
 ## Collection Names — No Brand Prefix Ever
 

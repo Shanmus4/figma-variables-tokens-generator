@@ -11,30 +11,20 @@
 
 After all ZIPs are imported, configure which collections appear in Figma's variable pickers.
 
-**Two separate controls in Figma — both need to be set:**
+**CRITICAL FIGMA BUG EXPLANATION FOR USER:**
+Provide this exact guidance to the user before listing their collections:
+> "Because of a Figma JSON import limitation, 'no scope' variables default to 'all scopes' upon import. You must manually turn off scoping (select all variables → remove all scopes) for collections that act purely as alias parents."
 
-1. **Scoping** (per variable) — controls which property types the variable appears in. Set on each variable via Edit Variable → Scopes. Already set correctly in the generated JSON.
-2. **Hide from publishing** (per collection) — controls what library consumers see. Set per collection. Already set on Primitives via `hiddenFromPublishing: true` in the JSON.
+**Dynamic Scoping Output Logic:**
+Generate a specific list of collections the user must turn off based on their exact generated architecture. Use this logic:
 
-**What to turn off scoping for** (so intermediate collections don't clutter pickers):
+- **1-layer:** "Do NOT turn off any scopes. Primitives is your only collection, so it must remain visible in pickers."
+- **2-layer:** "Turn off scopes for **Primitives**."
+- **3-layer:** "Turn off scopes for **Primitives**. If you use **Theme** strictly as a parent for Component Colors, turn off its scopes too. (Keep scopes ON for Theme if you apply its tokens directly to layers)."
+- **4-layer:** "Turn off scopes for **Primitives**. If you use **Theme** and **Semantic** strictly as parents for Component Colors, turn off their scopes too. (Keep scopes ON if you apply their tokens directly to layers)."
+- **Optional Collections (If generated):** "If you generated **Responsive** or **Density**, turn off their scopes, as they only feed into Component Dimensions/Typography and should not be picked directly."
 
-The goal is that designers only see tip collections in pickers. Intermediate collections should have their scoping turned off — meaning set every variable in that collection to **no scopes** (empty scope list), so they disappear from all property pickers.
-
-The fastest way in Figma: select all variables in the collection → Edit Variable → remove all scopes.
-
-Provide this guidance based on the user's layer choice:
-
-**1-layer:** Nothing to change — Primitives is the only collection, designers use it directly.
-
-**2-layer:** Turn off scoping on **Primitives only**. Theme is the colour tip in 2-layer — keep it visible.
-
-**3-layer:** Turn off scoping on **Primitives** and **Theme**. Suggested — verify first. If you have frames where you applied Theme tokens directly, re-enable scoping on Theme selectively for those token paths.
-Tip collections (keep scoping on): Component Colors, Component Dimensions, Typography, Responsive, Density, Layout, Effects.
-
-**4-layer:** Turn off scoping on **Primitives**, **Theme**, and **Semantic**. Same caveat — check usage before turning off Semantic.
-Tip collections (keep scoping on): Component Colors, Component Dimensions, Typography, Responsive, Density, Layout, Effects.
-
-> Note: "Hide from publishing" and "turn off scoping" are two different things. Publishing controls what external library consumers see. Scoping controls what appears in the variable picker when a designer applies a variable to a layer property. You need to manage both. The generated JSON handles Primitives `hiddenFromPublishing: true` already — do the rest manually after import.
+> Note: "Hide from publishing" and "turn off scoping" are two different things. Publishing controls what external library consumers see. Scoping controls what appears in the variable picker when a designer applies a variable to a layer property. Both should be managed. The generated JSON handles Primitives `hiddenFromPublishing: true` already.
 
 ---
 
