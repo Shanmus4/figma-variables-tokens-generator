@@ -192,15 +192,16 @@ responsive/borderWidth/lg         4    (all modes)
 **Aliases:** Primitives/spacing/*
 **Scope:** GAP on ALL tokens
 
-Padding tokens cover the 6 directions only (x, y, top, bottom, left, right) — no size-scale variants. Values scale significantly across density modes, reaching up to 64px at spacious. Gap tokens range from xs through 4xl, reaching 128px at spacious.
+Padding tokens cover the 6 directions (x, y, top, bottom, left, right). Each direction contains a full size scale (xs through 4xl). Values scale significantly across density modes. Gap tokens also range from xs through 4xl.
 
 ```
-density/padding/x       GAP   compact=16,  comfortable=32,  spacious=64
-density/padding/y       GAP   compact=12,  comfortable=24,  spacious=48
-density/padding/top     GAP   compact=12,  comfortable=24,  spacious=48
-density/padding/bottom  GAP   compact=12,  comfortable=24,  spacious=48
-density/padding/left    GAP   compact=16,  comfortable=32,  spacious=64
-density/padding/right   GAP   compact=16,  comfortable=32,  spacious=64
+density/padding/x/xs       GAP   compact=2,   comfortable=4,   spacious=6
+density/padding/x/sm       GAP   compact=4,   comfortable=6,   spacious=8
+density/padding/x/md       GAP   compact=8,   comfortable=12,  spacious=16
+density/padding/y/xs       GAP   compact=2,   comfortable=4,   spacious=6
+density/padding/y/sm       GAP   compact=4,   comfortable=6,   spacious=8
+density/padding/y/md       GAP   compact=8,   comfortable=12,  spacious=16
+... (apply the same xs→4xl nested scale across top, bottom, left, right)
 density/gap/xs          GAP   compact=2,   comfortable=4,   spacious=6
 density/gap/sm          GAP   compact=4,   comfortable=8,   spacious=12
 density/gap/md          GAP   compact=8,   comfortable=12,  spacious=16
