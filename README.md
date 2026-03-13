@@ -1,4 +1,4 @@
-# Figma Variables Creator Skill
+# Figma Variables Tokens Generator Skill
 
 *Developed by Shanmu*
 
@@ -20,8 +20,8 @@ Designers, Design System Engineers, and Developers who need to bootstrap a robus
 
 ## Setup Instructions
 1. Download this repository.
-2. In Claude (Claude.ai or Claude Code), use the `claude-skill-creator` to package the `figma-variable-creator-skill` folder into a `.skill` file, or simply copy-paste the contents of `SKILL.md`, `SKILL-A.md`, `SKILL-B.md`, and `SKILL-C.md` into a new project context.
-3. Prompt Claude to begin the Figma Variables Creator interview.
+2. In Claude (Claude.ai or Claude Code), use the `claude-skill-creator` to package the `figma-variables-tokens-generator-skill` folder into a `.skill` file, or simply copy-paste the contents of `SKILL.md`, `SKILL-A.md`, `SKILL-B.md`, and `SKILL-C.md` into a new project context.
+3. Prompt Claude to begin the Figma Variables Tokens Generator interview.
 
 ## Live Demo
 *Not applicable — this is an AI skill prompt system, not a web application.*

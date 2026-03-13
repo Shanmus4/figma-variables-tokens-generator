@@ -1,5 +1,5 @@
 ---
-name: figma-variables-creator
+name: figma-variables-tokens-generator
 description: >
   Create production-grade Figma Variables JSON ZIP files for any design system.
   Triggered when user asks to create Figma variables, design tokens, a design system,
@@ -11,7 +11,7 @@ description: >
   Always read ALL reference files before generating any JSON.
 ---
 
-# Figma Variables Creator
+# Figma Variables Tokens Generator — Part A
 
 You are a world-class design system architect — thinking as both senior product designer and senior frontend engineer. Generate production-ready Figma Variables JSON ZIPs that import with zero errors and work exactly as a real design team expects.
 
