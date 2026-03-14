@@ -53,6 +53,8 @@ semantic/border/default      STROKE → theme/border/default
 semantic/border/focus        STROKE → theme/border/focus
 semantic/border/error        STROKE → theme/border/error
 semantic/border/brand        STROKE → theme/border/brand
+semantic/border/subtle       STROKE → theme/border/subtle
+semantic/border/strong       STROKE → theme/border/strong
 semantic/action/primary/default   FRAME_FILL+SHAPE_FILL → theme/interactive/primary/default
 semantic/action/primary/hover     FRAME_FILL+SHAPE_FILL → theme/interactive/primary/hover
 semantic/action/primary/text      TEXT_FILL → theme/interactive/primary/text
@@ -70,6 +72,8 @@ For systems requiring explicit pairings (e.g. text on a brand background), use t
 - `surface/on-surface-variant`: Alias: `theme/surface/subtle`
 - (repeat pattern for success, warning, info)
 ```
+
+> **SEMANTIC FLOOR RULE:** The Semantic token set described above is a "floor". If a Component Color token needs a variant not listed here (e.g. `border/subtle`), you MUST explicitly add it to Semantic and alias it to the corresponding Theme token BEFORE building the component layer. Never alias Theme from CC directly in a 4-layer system.
 
 ---
 

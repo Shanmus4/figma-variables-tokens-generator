@@ -244,8 +244,10 @@ Follow this exact 3-step pattern for every generation turn. Do NOT deviate:
     - **D. Loop**: Loop through your `brand_data` calling `create_token` and `nest_token`. You must use the self-correcting prefix stripping and backfilling guards built into the utility.
 3. **Step 3 — Output**: Execute and output the ZIP. No narration between steps.
 
-> **PERFORMANCE & STABILITY GUARDRAILS:**
-> 1. **No Bespoke Logic:** Do NOT "invent" custom loop logic. Use the patterns in `references/06-generator-utility.md`.
+> **PERFORMANCE & STABILITY GUARDRAILS (OBEY OR RISK SYSTEM FAILURE):**
+> 1. **Default to Single-Script Generation**: Always write all generation phases in a **single `gen_all.py`** script. This runs all phases sequentially in memory and avoids all serialization problems. Only split into separate phase scripts if token count exceeds ~1000 and context truncation is a critical risk.
+> 2. **No Cross-Script Pickle of Class Instances**: Never pickle a `DesignTokenGenerator` instance across different scripts. Pickle stores class module paths (e.g. `__main__`) which break when loaded in a different script. If splitting is unavoidable, define the class in a shared `generator_core.py` and import it in every script.
+> 3. **No Bespoke Logic:** Do NOT "invent" custom loop logic. Use the patterns in `references/06-generator-utility.md`.
 > 2. **Resumption Rule:** if interrupted (Continue button), pick up immediately from where you left off in the script. Do NOT repeat reasoning.
 > 3. **Script Conciseness:** Rely on the blueprint patterns to keep the Python payload small.
 
@@ -257,7 +259,7 @@ Follow this exact 3-step pattern for every generation turn. Do NOT deviate:
 >     - Before Phase A: N/A.
 >     - Before Phase B: Run `validate_responsive_coverage`.
 >     - Before Phase C: Run `validate_semantic_coverage`.
->     If either check fails, you MUST backfill the missing primitives or correct the semantic aliases before proceeding.
+> 4. **Mandatory Pre-CC Semantic Audit**: Before writing Component Colors, you MUST build a flat `cc_to_sem` intent map and call `validate_semantic_coverage()` against it. If any gap is found (e.g. `border/subtle` missing from Semantic), add it to Semantic first. Never allow a "VariableID:0:0" to be written to Component Colors.
 > 4. **Icon Mapping**: The `color/icon/*` group in Component Colors should alias `Theme` for general UI roles (default, muted, brand, error, etc.), unless a specific 4-layer semantic icon layer was requested.
 > 4. **Mandatory $value (Real Value Rule)**: `$value` on alias tokens is a placeholder but must be structural. Use the **Actual Resolved Value** for numbers and strings (safety fallback). Use a **Black Object** for colors. String tokens REQUIRE `"com.figma.type": "string"` at all layers, and **Primitive Strings DO have scopes**. NO curly braces. See `references/03-json-format.md`.
 > 5. **Typography Completeness Check**: Before writing Typography, explicitly list every role × every property (fontSize, lineHeight, letterSpacing, fontFamily, fontWeight) as a checklist. Verify all 5 are present for every role. A missing property = a dropped token in Figma.
