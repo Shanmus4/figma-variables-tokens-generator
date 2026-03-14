@@ -1,6 +1,6 @@
 # Figma Variables Tokens Generator Skill
 
-*Developed by Shanmu*
+*Developed by Shanmugha Sundaram Srinivasan*
 
 ## What it is
 A specialized skill for Anthropic's Claude that acts as an expert interviewer and code generator for creating massive, production-ready Figma Variable JSON files. It guides users through architectural decisions and generates complex token systems (Primitives, Theme, Responsive, Typography, Density, etc.) based on their exact brand needs.
@@ -25,6 +25,10 @@ Designers, Design System Engineers, and Developers who need to bootstrap a robus
 
 ## Live Demo
 *Not applicable — this is an AI skill prompt system, not a web application.*
+
+## Licensing
+- **Root Repository:** [Apache License 2.0](file:///d:/DOCUMENTS/S4%20Work/AI%20Projects/Figma%20Variables%20Generator/LICENSE)
+- **Figma Variables Generator Skill:** [Proprietary Source Available License](file:///d:/DOCUMENTS/S4%20Work/AI%20Projects/Figma%20Variables%20Generator/figma-variables-tokens-generator-skill/LICENSE) — Protects architectural logic and prohibits unauthorized redistribution or commercial exploitation.
 
 ## Troubleshooting
 - **Claude times out during generation:** Ensure Claude is following the "Phased Generation" rules in `instructions/02-questionnaire-and-generation.md`. Do not ask Claude to generate all ZIP files at once.
