@@ -237,7 +237,11 @@ Your `<thought>` block must be a **bulleted summary of under 100 words**. Do NOT
 ### Data Blueprint Workflow (MANDATORY)
 Follow this exact 3-step pattern for every generation turn. Do NOT deviate:
 1. **Step 1 — Data Dictionary**: Summarize the interview answers into a compact `brand_data` Python dictionary (hex codes, mode names, font choices, layer count). This is the ONLY planning you do.
-2. **Step 2 — Script**: Write a short Python script that imports `DesignTokenGenerator` from `references/06-generator-utility.md` and loops through your `brand_data` dictionary calling `create_token` and `nest_token`. **You must use the self-correcting prefix stripping and backfilling guards built into the utility.**
+2. **Step 2 — Script**: 
+    - **A. Shared Utility**: You MUST first write the code from `references/06-generator-utility.md` into a file named `generator_utils.py`.
+    - **B. Generation Script**: Write your generation script (Turn A, B, or C). Import the generator using `from generator_utils import DesignTokenGenerator`. 
+    - **C. Persistence**: Use `pickle` to save/load the `gen` instance. Because it is imported from a shared file, the state will be stable across multiple scripts.
+    - **D. Loop**: Loop through your `brand_data` calling `create_token` and `nest_token`. You must use the self-correcting prefix stripping and backfilling guards built into the utility.
 3. **Step 3 — Output**: Execute and output the ZIP. No narration between steps.
 
 > **PERFORMANCE & STABILITY GUARDRAILS:**
