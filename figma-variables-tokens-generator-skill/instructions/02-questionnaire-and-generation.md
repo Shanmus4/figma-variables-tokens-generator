@@ -147,17 +147,16 @@ Wait for the response. Then show:
 
 ---
 
-### TURN 10 — Final Options
+### TURN G — SUMMARY & MANIFEST
+Synthesize all answers into a "Collection Manifest" table.
+- **Columns**: Collection Name, Token Groups, Total Estimated Tokens, Key Inferences.
+- **Goal**: Show the user exactly what's being built before any generation begins.
 
-**⛔ HARD STOP:** You must ask this question and wait for a response before showing the Architecture Summary or generating a single token. Never skip this turn.
+**Q19** *(ask_user_input — single_select)*: "Shall I proceed with Generation Phase A as described in the manifest?"
+- `Yes — proceed with Generation`
+- `No — I have additional comments or requirements`
 
-**Q19** *(ask_user_input — single_select)*: "Any other requirements or specific details to include?"
-- `No — everything is covered. Proceed to architecture summary.`
-- `Yes — I have additional comments or requirements (specific values, naming tweaks, etc.)`
-
-> If "Yes": ask open-text — "Please describe any additional requirements, conventions, or tokens I should include or avoid." — wait for response.
-
-**⛔ STOP HERE.** Send this message and wait for the user's response.
+> If "Yes": proceed. If "No": ask open-text — "Please describe any additional requirements..." — wait for response.
 
 
 ---
@@ -254,7 +253,12 @@ Follow this exact 3-step pattern for every generation turn. Do NOT deviate:
 > Broken aliases cause silent Figma import failures. You must verify every link:
 > 1. **The Backfilling Rule (Fail-Fast)**: If a structural collection (Density, Responsive, Layout) requires a value NOT in your current Primitives scale (e.g., 30px lineHeight), you **must stop immediately** and add that value to the `Primitives` collection. The `create_token` utility will raise a `KeyError` if you attempt to alias a missing Primitive — do not ignore this.
 > 2. **Verification Step**: Before outputting Turn C, run a mental "Pre-flight" check. Every `aliasData` targetVariableName MUST exist in the parent file. Check every token for mandatory `$value`.
-> 3. **Icon Mapping**: The `color/icon/*` group in Component Colors should alias `Theme` for general UI roles (default, muted, brand, error, etc.), unless a specific 4-layer semantic icon layer was requested.
+> 3. **Pre-Generation Coverage Audit (MANDATORY)**: 
+>     - Before Phase A: N/A.
+>     - Before Phase B: Run `validate_responsive_coverage`.
+>     - Before Phase C: Run `validate_semantic_coverage`.
+>     If either check fails, you MUST backfill the missing primitives or correct the semantic aliases before proceeding.
+> 4. **Icon Mapping**: The `color/icon/*` group in Component Colors should alias `Theme` for general UI roles (default, muted, brand, error, etc.), unless a specific 4-layer semantic icon layer was requested.
 > 4. **Mandatory $value (Real Value Rule)**: `$value` on alias tokens is a placeholder but must be structural. Use the **Actual Resolved Value** for numbers and strings (safety fallback). Use a **Black Object** for colors. String tokens REQUIRE `"com.figma.type": "string"` at all layers, and **Primitive Strings DO have scopes**. NO curly braces. See `references/03-json-format.md`.
 > 5. **Typography Completeness Check**: Before writing Typography, explicitly list every role × every property (fontSize, lineHeight, letterSpacing, fontFamily, fontWeight) as a checklist. Verify all 5 are present for every role. A missing property = a dropped token in Figma.
 > 6. **Semantic Path Verification**: When referencing Semantic in `Component Colors`, verify that the specific path (e.g. `surface/raised`) was actually generated in the Semantic collection. It is not enough to check if the collection exists; you must check the path completeness.

@@ -60,10 +60,15 @@ semantic/action/secondary/default FRAME_FILL+SHAPE_FILL → theme/interactive/se
 semantic/action/secondary/text    TEXT_FILL → theme/interactive/secondary/text
 semantic/action/destructive       FRAME_FILL+SHAPE_FILL → theme/interactive/destructive/default
 semantic/action/destructive/text  TEXT_FILL → theme/interactive/destructive/text
-semantic/feedback/error/surface   FRAME_FILL+SHAPE_FILL → theme/feedback/error/surface
-semantic/feedback/error/border    STROKE → theme/feedback/error/border
 semantic/feedback/error/text      TEXT_FILL → theme/feedback/error/text
-(repeat pattern for success, warning, info)
+
+### The "On" Pattern (Material/Semantic Pairing)
+For systems requiring explicit pairings (e.g. text on a brand background), use the `on-*` namespace in Semantic:
+- `text/on-brand`: Alias: `primitives/white`
+- `text/on-error`: Alias: `primitives/white`
+- `icon/on-brand`: Alias: `primitives/white`
+- `surface/on-surface-variant`: Alias: `theme/surface/subtle`
+- (repeat pattern for success, warning, info)
 ```
 
 ---
@@ -100,7 +105,9 @@ color/icon/success/fill       SHAPE_FILL
 color/icon/success/duotone    SHAPE_FILL
 color/icon/warning/fill       SHAPE_FILL
 color/icon/warning/duotone    SHAPE_FILL
-color/icon/background         FRAME_FILL  (if user confirmed icon bg)
+color/icon/background         FRAME_FILL+SHAPE_FILL (if user confirmed icon bg)
+                                     → semantic/icon/background (4-layer)
+                                     or theme/surface/sunken (2/3-layer)
 ```
 
 > DUOTONE RULE: The `duotone` token should alias the same colour as `fill` but through the alpha/a20 or a24 variant from Primitives. For example if `fill` → `theme/text/primary` which resolves to `primitives/color/grey/900`, then `duotone` → `primitives/color/grey/a24`. This matches the SVG `opacity="0.2"` pattern for the secondary path of a duotone icon.

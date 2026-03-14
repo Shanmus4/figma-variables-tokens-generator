@@ -49,7 +49,16 @@ theme/text/link
 theme/text/link-hover
 theme/text/on-brand
 theme/text/on-danger
+theme/text/on-surface-variant
+theme/text/on-feedback-error
+theme/text/on-feedback-success
 ```
+
+### The "On" Pattern (Theme)
+Theme defines the primary "on" tokens that Semantic will later alias.
+- `on-brand`: → `primitives/white` (light/dark)
+- `on-feedback-*`: → `primitives/white`
+- `on-surface-variant`: → `theme/text/secondary`
 
 ### border group → STROKE
 ```
@@ -312,6 +321,12 @@ typography/{role}/letterSpacing  LETTER_SPACING → Responsive: font/letterSpaci
                                                   (if no matching letterSpacing role, alias closest)
 typography/{role}/fontFamily     FONT_FAMILY    → Primitives: font/family/{name}  ← direct to Primitives
 typography/{role}/fontWeight     FONT_STYLE     → Primitives: font/weight/{name}  ← direct to Primitives
+
+> **RC5: LetterSpacing Path Mapping (CRITICAL)**
+> There is a schema mismatch between Primitives and Responsive for `letterSpacing`:
+> - **Primitives**: Uses semantic names (e.g. `font/letterspacing/tight`).
+> - **Responsive**: Uses role names (e.g. `responsive/font/letterspacing/display`).
+> When building Typography, you MUST alias **Responsive** for numerical compatibility across breakpoints. Do NOT alias Primitives directly for letterSpacing roles.
 ```
 
 ### Font colour tokens → alias Theme

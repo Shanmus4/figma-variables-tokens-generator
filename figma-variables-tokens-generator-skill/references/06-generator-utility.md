@@ -47,7 +47,7 @@ class DesignTokenGenerator:
         return id_map[key]
 
     def validate_responsive_coverage(self, resp_size, resp_lh, resp_ls):
-        """Pre-flight audit for Responsive -> Primitive coverage. Run BEFORE save_mode('Primitives')."""
+        """Pre-flight audit for Responsive -> Primitive coverage."""
         missing = []
         for role, modes in resp_size.items():
             for v in (modes if isinstance(modes, list) else modes.values()):
@@ -58,7 +58,21 @@ class DesignTokenGenerator:
         if missing:
             raise KeyError(f"BACKFILL REQUIRED: Missing paths in Primitives. Add them BEFORE saving Primitives: {list(set(missing))}")
 
-    def create_token(self, name, ns, type, value=None, scope=None, alias_target=None, alias_set=None, vid=None):
+    def validate_semantic_coverage(self, cc_map, sem_registry):
+        """
+        Pre-flight audit for Component Colors -> Semantic coverage (4-layer only).
+        Run BEFORE building Component Colors.
+        """
+        missing = []
+        for cc_path, target_sem_path in cc_map.items():
+            # Strip the collection prefix if present for lookup
+            clean_target = target_sem_path.lower().replace("semantic/", "", 1)
+            if clean_target not in sem_registry:
+                missing.append(f"{cc_path} -> {target_sem_path}")
+        if missing:
+            raise KeyError(f"SEMANTIC GAP: Component tokens alias non-existent Semantic paths. Fix before generating: {missing}")
+
+    def create_token(self, name, ns, type, value=None, scope=None, alias_target=None, alias_set=None, vid=None, target_registry=None):
         path = name.lower()
         vid = vid or self.next_id(ns)
         self.token_registry[path] = vid
@@ -83,22 +97,24 @@ class DesignTokenGenerator:
             
         if alias_target:
             target_path = alias_target.lower()
-            # Bug 1 Fix: CRITICAL ALIAS RULE - Strip collection prefix from path
+            # CRITICAL ALIAS RULE - Strip collection prefix from path for valid JSON
             known_sets = ["primitives/", "theme/", "responsive/", "density/", "layout/", "effects/", "typography/", "semantic/", "component colors/", "component dimensions/"]
             for s in known_sets:
                 if target_path.startswith(s):
                     target_path = target_path.replace(s, "", 1)
             
-            target_vid = self.token_registry.get(target_path)
+            # Use specific target_registry if provided (Fixes Bug 3 Cross-Layer verification)
+            registry = target_registry if target_registry is not None else self.token_registry
+            target_vid = registry.get(target_path)
             
             # Bug 3 & 7 Fix: Automated Backfilling Guard
             if not target_vid and alias_set == "Primitives":
-                # If target is missing in Primitives, this token WILL fail.
-                # AI must fail-fast here and add the missing primitive first.
                 raise KeyError(f"MISSING PRIMITIVE: Target '{target_path}' not found in Primitives registry. You MUST add this primitive before aliasing it.")
+            elif not target_vid and target_registry is not None:
+                raise KeyError(f"CROSS-LAYER GAP: Target '{target_path}' not found in {alias_set} registry. This will break the import.")
 
             ext["com.figma.aliasData"] = {
-                "targetVariableId": target_vid or "VariableID:0:0", # Should not be 0:0 for production
+                "targetVariableId": target_vid or "VariableID:0:0",
                 "targetVariableName": target_path,
                 "targetVariableSetName": alias_set
             }

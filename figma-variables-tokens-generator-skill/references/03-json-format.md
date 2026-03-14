@@ -383,7 +383,8 @@ def write_zip(zip_name: str, files: dict):
 - [ ] All files end with `$metadata.modeName`
 - [ ] **NO targetVariableName contains a collection prefix** (e.g. no `theme/` or `semantic/` inside the path)
 - [ ] **ID STABILITY CHECK**: Every mode file in a multi-mode collection (Theme, Responsive, Density, Layout) uses the EXACT same `variableId` for the same token path.
-- [ ] **Zero id:0:0 references**: Every alias ID must be a real, generated ID from the registry.
+- [ ] **Zero VariableID:0:0 references**: Every alias ID must be a real, generated ID from the registry.
+- [ ] **Per-Collection Target Verification**: Every targetVariableName must exist in the specific targetVariableSetName. (e.g., if set is `Semantic`, path must exist in `semantic.tokens.json`).
 
 > [!CAUTION]
 > **NO PROPRIETARY DUMPING**: Never output JSON in a raw markdown code block. It must ALWAYS be delivered inside the final ZIP file structure. Dumping tokens in the chat window causes context truncation and broken files.
@@ -391,27 +392,39 @@ def write_zip(zip_name: str, files: dict):
 ### Python Pre-ZIP Validation Script (Safety Gate)
 Run this check inside your script before calling `build_zip`:
 ```python
-def validate_tokens(files):
+def validate_tokens(files, registries):
+    """
+    files: { "path/to/file.json": data_dict }
+    registries: { "CollectionName": { "token/path": "VariableID" } }
+    """
     sets = ["Primitives", "Theme", "Responsive", "Density", "Layout", "Effects", "Typography", "Semantic", "Component Colors", "Component Dimensions"]
     for filename, data in files.items():
         for token in data.values():
             if isinstance(token, dict) and "$extensions" in token:
                 ext = token["$extensions"]
                 if "com.figma.aliasData" in ext:
-                    name = ext["com.figma.aliasData"]["targetVariableName"]
+                    alias = ext["com.figma.aliasData"]
+                    target_set = alias["targetVariableSetName"]
+                    target_name = alias["targetVariableName"]
+                    
+                    # RCA 5 Fix: Catch broken alias lookups
+                    if alias["targetVariableId"] == "VariableID:0:0":
+                         raise ValueError(f"CRITICAL: Broken alias 'VariableID:0:0' detected for '{target_name}'.")
+
+                    # RCA 5 Fix: Per-Collection Target Verification
+                    if target_set in registries:
+                        if target_name not in registries[target_set]:
+                            raise ValueError(f"CROSS-LAYER GAP: Token aliases '{target_name}' in '{target_set}', but that path does not exist in the target collection.")
+
                     # Bug 1 Fix: Verify no prefix contamination
                     for s in sets:
-                        if name.startswith(s.lower() + "/"):
-                            raise ValueError(f"CRITICAL: Token path '{name}' contains illegal collection prefix '{s}/'")
+                        if target_name.startswith(s.lower() + "/"):
+                            raise ValueError(f"CRITICAL: Token path '{target_name}' contains illegal collection prefix '{s}/'")
+                
                 # Bug 2 Fix: Verify syntax purity
                 syntax = ext.get("com.figma.codeSyntax", {}).get("WEB", "")
                 if "  " in syntax:
                     raise ValueError(f"CRITICAL: Double-space detected in codeSyntax: {syntax}")
-                
-                # Bug 8 Fix: Catch broken alias lookups
-                if "com.figma.aliasData" in ext:
-                    if ext["com.figma.aliasData"]["targetVariableId"] == "VariableID:0:0":
-                        raise ValueError(f"CRITICAL: Broken alias 'VariableID:0:0' detected for token. Lookup failed during generation.")
 ```
 
 ### Primitives
