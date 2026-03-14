@@ -1,0 +1,89 @@
+{
+  "skill_name": "figma-variables-tokens-generator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I want to create a Figma design token system for my B2B SaaS dashboard.",
+      "expected_output": "Skill starts at Turn 1 with a dropdown asking about existing Figma system. Proceeds sequentially through all turns (1–10) — each turn in a separate message. Does not skip turns or bundle multiple turns in one message. Asks dropdowns via ask_user_input tool calls. Uses any context clues (e.g. 'SaaS dashboard') to inject Rec[value] suggestions into questions but still asks them. After all turns are complete and user confirms the manifest, produces a ZIP file with correctly structured JSON. Token count table delivered after ZIP.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "starts-with-turn-1-dropdown",
+          "description": "First response uses ask_user_input for Turn 1 — not a freeform question and not Turn 2 or later"
+        },
+        {
+          "name": "turns-are-sequential-not-bundled",
+          "description": "Turn 2 is not shown in the same message as Turn 1"
+        },
+        {
+          "name": "dropdowns-use-ask-user-input-tool",
+          "description": "Questions labeled ask_user_input are sent as real tool calls, not as freeform prose"
+        },
+        {
+          "name": "zip-delivered-not-raw-json",
+          "description": "Final output is a downloadable ZIP file, not raw JSON dumped in the chat"
+        },
+        {
+          "name": "token-count-table-present",
+          "description": "A token count table is delivered after the ZIP with per-collection counts"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Help me build a Figma token system for a mobile app.",
+      "expected_output": "Skill starts at Turn 1 with a dropdown. Runs all questionnaire turns sequentially. Uses 'mobile app' context to inject Rec[value] suggestions (e.g. recommending mobile architecture, suggesting dark mode) but still asks every question via dropdowns — does not skip or auto-decide. After user works through all turns and confirms manifest, generates a ZIP appropriate for the architecture confirmed during the questionnaire. Token count table delivered.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "starts-with-turn-1-dropdown",
+          "description": "First response uses ask_user_input for Turn 1 — not a freeform question"
+        },
+        {
+          "name": "rec-value-injected-from-context",
+          "description": "Mobile app context is used to inject a [Rec: value] suggestion in at least one dropdown question (e.g. product type or architecture)"
+        },
+        {
+          "name": "architecture-question-still-asked",
+          "description": "Q7 (layer architecture) is asked via dropdown even though the context implies mobile — not auto-decided"
+        },
+        {
+          "name": "zip-delivered-not-raw-json",
+          "description": "Final output is a downloadable ZIP, not raw JSON in the chat"
+        },
+        {
+          "name": "token-count-table-present",
+          "description": "A token count table is delivered after the ZIP"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I need to build an enterprise design system for our fintech platform. We already have a Figma file with some variables I can export.",
+      "expected_output": "Skill starts at Turn 1 and, because the user has an existing Figma system, provides the export instructions for exporting variables from Figma. Waits for the uploaded files before proceeding to Turn 2. After receiving files, analyses them and adapts subsequent questions to include 'Keep existing' options alongside expansion options. Runs all turns sequentially. After user confirms manifest, generates a ZIP with correct structure for the confirmed architecture. Token count table delivered after ZIP.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "turn-1-provides-export-instructions",
+          "description": "When user indicates existing Figma system, Turn 1 response includes the step-by-step Figma variable export instructions"
+        },
+        {
+          "name": "waits-for-uploaded-files",
+          "description": "Turn 1 stops and waits for uploaded files — does not proceed to Turn 2 in the same message"
+        },
+        {
+          "name": "keep-existing-options-injected",
+          "description": "After file analysis, at least one dropdown includes a 'Keep existing:' option reflecting the uploaded system's conventions"
+        },
+        {
+          "name": "zip-delivered-not-raw-json",
+          "description": "Final output is a downloadable ZIP, not raw JSON in the chat"
+        },
+        {
+          "name": "token-count-table-present",
+          "description": "A token count table is delivered after the ZIP"
+        }
+      ]
+    }
+  ]
+}

@@ -1,3 +1,18 @@
+## Table of Contents
+
+1. [Token Object Structure](#token-object-structure) — primitive, middle-chain, tip token formats
+2. [Complete Alias Chain Samples](#complete-alias-chain-samples) — color, number, string chains by layer
+3. [aliasData Critical Rules](#aliasdata--critical-rules) — three required fields, no prefix contamination
+4. [Color Token Value](#color-token-value) — always an object, never a hex string
+5. [String Token](#string-token) — com.figma.type requirement
+6. [codeSyntax Format](#codesyntax-format) — format table by target platform
+7. [$metadata Block](#metadata-block) — modeName per collection
+8. [Variable ID Namespaces](#variable-id-namespaces) — namespace table by collection
+9. [ZIP File Structure](#zip-file-structure) — folder structure and Python builder
+10. [Validation Checklist](#validation-checklist) — run before finalising each ZIP
+
+---
+
 ## Token Object Structure
 
 > [!IMPORTANT]

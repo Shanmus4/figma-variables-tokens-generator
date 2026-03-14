@@ -1,12 +1,12 @@
 # Figma Variables — Handoff
 
-### 🏁 READ PHASE D: Delivery & Handoff
+### 🏁 READ LOAD STAGE 4: Delivery & Handoff
 Read this file ONLY after Generation (Turn C) and Token Count Reporting (Turn D) are complete.
 
 ## PHASE 4 — IMPORT INSTRUCTIONS
 
 1. Open Figma → Local Variables panel
-2. Import ZIPs in the **exact order listed in Phase 2** — each collection must exist before anything that aliases it
+2. Import ZIPs in the **exact order shown in the Architecture Summary you confirmed before generation** — each collection must exist before anything that aliases it (Primitives first, Component Colors last)
 3. For each ZIP: click **+ next to Collections** (top of the Local Variables panel) → name the collection exactly as shown → import the JSON file(s)
 4. After import: verify alias chains resolve correctly by opening a token and checking its chain
 
@@ -16,7 +16,7 @@ Read this file ONLY after Generation (Turn C) and Token Count Reporting (Turn D)
 
 After all ZIPs are imported, configure which collections appear in Figma's variable pickers.
 
-**CRITICAL FIGMA BUG EXPLANATION FOR USER:**
+**Figma scoping note for user:**
 Provide this exact guidance to the user before listing their collections:
 > "Because of a Figma JSON import limitation, 'no scope' variables default to 'all scopes' upon import. You must manually turn off scoping (select all variables → remove all scopes) for collections that act purely as alias parents."
 
@@ -38,6 +38,8 @@ Generate a specific list of collections the user must turn off based on their ex
 Ask: "Anything you'd like to change, add, or adjust?"
 
 ---
+
+## ZIP Structure Reference
 
 | Folder (inside Master ZIP) | Figma collection name | Mode file(s) |
 |---|---|---|

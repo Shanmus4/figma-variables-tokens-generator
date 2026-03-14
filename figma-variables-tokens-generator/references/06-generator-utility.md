@@ -1,6 +1,6 @@
 # DesignTokenGenerator Utility
 
-> ⚡ **ZERO THINKING DIRECTIVE**: If you are reading this file, you are in Phase C (Generation). STOP all narration. STOP explaining your logic. Use the methods below to build your `brand_data` dictionary and execute your script immediately.
+> You are in Load Stage 3 (Generation). Build the `brand_data` dictionary and execute the script immediately. Prose narration of what the code does adds nothing — the code is its own documentation.
 
 ## 1. Core Logic
 

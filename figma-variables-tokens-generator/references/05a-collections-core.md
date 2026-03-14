@@ -1,5 +1,14 @@
 # Collection Specs Reference
 
+## Table of Contents
+1. [Primitives](#primitives) — colour palette, spacing, shadow geometry, font primitives
+2. [Theme Collection](#theme-collection) — surface, text, border, interactive, feedback, overlay
+3. [Responsive Collection](#responsive-collection-new) — font size/lineHeight/letterSpacing × 3 breakpoints
+4. [Density Collection](#density-collection) — padding/gap × compact/comfortable/spacious
+5. [Layout Collection](#layout-collection) — grid columns/margins/gutters × xs→xxl
+6. [Effects Collection](#effects-collection) — shadows and blur tokens
+7. [Typography Collection](#typography-collection) — font roles × 5 properties
+
 ---
 
 ## Primitives

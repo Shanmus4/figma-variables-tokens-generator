@@ -1,11 +1,13 @@
-> - **PROACTIVE RECOMMENDATIONS (MANDATORY)**: Based on the Brand & Context from Turn 3, the AI MUST act as a design expert.
+## Dynamic Questionnaire Rules — Turns 4–9 (Read with Load Stage 1)
+
+> - **PROACTIVE RECOMMENDATIONS (MANDATORY)**: Based on the Brand & Context from Turn 3, act as a design expert.
 >     - **Label injection**: Inject your recommendation directly into the question string. Format: `[Rec: [Value]] [Original Question]`. (e.g. `[Rec: Blue] Primary brand colour?`)
 >     - **Option tagging**: Use `[Recommended for [Project Context]]` for the corresponding dropdown option.
-> - **NEVER SKIP A QUESTION.** Every question in Turns 4-9 MUST still be asked, even if you can infer the answer. The user must always have the chance to confirm or change.
+> - **Never skip a question.** Every question in Turns 4–9 must still be asked, even if you can infer the answer. The user must always have the chance to confirm or change.
 > - **Contextualize the question:** Tell the user what you found. (e.g., *"I see your current system only has a Light mode."* or *"I see these tokens came from a Web project."*)
-> - **Inject dynamic choices (LITERAL STRINGS):** Modify your dropdown choices to include keeping their existing setup versus expanding/changing it. You MUST use the format: `Keep existing: [Feature Name] (e.g. [Full Token Example])`. **NEVER** shorten or summarize the examples. (e.g. `Keep existing: camelCase (colorButtonPrimary)`).
-> - **Architectural Dependencies:** Some questions depend on previous choices. (e.g., If the user chose a **2-layer architecture** in Q7, you **MUST NOT** offer `Component-first` naming in Q18, as 2-layer systems do not have a dedicated component layer). 
-> - Apply this intelligence to Product Type (Q2), Colours (Q3-Q6), Layer Architecture (Q7), Code Syntax (Q17), and Token naming (Q18). Adapt the dropdown OPTIONS based on what you learned — but still present the dropdown and wait for the user's selection.
+> - **Inject dynamic choices (LITERAL STRINGS):** Modify your dropdown choices to include keeping their existing setup versus expanding/changing it. Use the format: `Keep existing: [Feature Name] (e.g. [Full Token Example])`. Never shorten or summarize the examples — the full example is the pattern being demonstrated. (e.g. `Keep existing: camelCase (colorButtonPrimary)`).
+> - **Architectural Dependencies:** Some questions depend on previous choices. (e.g., If the user chose a **2-layer architecture** in Q7, do **NOT** offer `Component-first` naming in Q18, as 2-layer systems do not have a dedicated component layer).
+> - Apply this intelligence to Product Type (Q2), Colours (Q3–Q6), Layer Architecture (Q7), Code Syntax (Q17), and Token naming (Q18). Adapt the dropdown OPTIONS based on what you learned — but still present the dropdown and wait for the user's selection.
 
 
 ### TURN 4 — Product Type + Colours (dropdowns)
@@ -131,7 +133,7 @@ Show all optional collection questions as a batch. The Responsive collection is 
 
 **Q18** *(ask_user_input — single_select)*: "Token naming convention? [Rec: [Value]]"
 - `Role-based (e.g. color/surface/primary or color/text/secondary)`
-- `Component-first (e.g. color/button/primary/background/state)` (HIDDEN if 2-layer chosen)
+- `Component-first (e.g. color/button/secondary/default/background)` (HIDDEN if 2-layer chosen)
 - `Material Design (e.g. color/surface or color/on-surface)`
 - `IBM Carbon (e.g. color/background or color/text-primary)`
 - `Custom (I'll describe a different naming structure)`
@@ -141,12 +143,12 @@ Show all optional collection questions as a batch. The Responsive collection is 
 
 ---
 
-### TURN G — SUMMARY & MANIFEST
+### TURN 10 — SUMMARY & MANIFEST
 Synthesize all answers into a "Collection Manifest" table.
 - **Columns**: Collection Name, Token Groups, Total Estimated Tokens, Key Inferences.
 - **Goal**: Show the user exactly what's being built before any generation begins.
 
-**Q19** *(ask_user_input — single_select)*: "Shall I proceed with Generation Phase A as described in the manifest?"
+**Q19** *(ask_user_input — single_select)*: "Shall I proceed with generation as described in the manifest?"
 - `Yes — proceed with Generation`
 - `No — I have additional comments or requirements`
 
@@ -157,8 +159,8 @@ Synthesize all answers into a "Collection Manifest" table.
 
 ## PHASE 2 — CONFIRM ARCHITECTURE
 
-### 🧩 READ PHASE B: System Specifications
-Before proceeding, you MUST now read:
+### 🧩 READ LOAD STAGE 2: System Specifications
+Before proceeding, you must now read:
 - `references/05a-collections-core.md`
 - `references/05b-collections-semantic-components.md`
 
@@ -196,7 +198,7 @@ High contrast: {yes/no}
 ```
 
 **AUTONOMOUS PATH SELECTION (MANDATORY):**
-You (the AI) MUST choose the safest generation path independently. Do NOT ask the user to choose between Path 1 and Path 2. 
+You (the AI) must choose the safest generation path independently. Do NOT ask the user to choose between Path 1 and Path 2. 
 
 1.  **Evaluate Complexity**: Based on the confirmed architecture (layers, collections, modes), calculate if a single-shot generation is safe.
 2.  **Declare your choice**: Tell the user: *"Based on the architecture complexity, I have chosen [Path 1: One-Shot / Path 2: Phased] to ensure maximum precision and zero timeouts."*
@@ -217,61 +219,54 @@ You (the AI) MUST choose the safest generation path independently. Do NOT ask th
 
 ## PHASE 3 — GENERATION
 
-### 🏗️ READ PHASE C: Technical Implementation
-Before writing ANY JSON, you MUST now read:
+### 🏗️ READ LOAD STAGE 3: Technical Implementation
+Before writing ANY JSON, you must now read:
 - `references/02-scoping-rules.md`
 - `references/03-json-format.md`
 - `references/04-primitives.md`
 - `references/06-generator-utility.md`
 
-### ⚠️ THINKING BUDGET — RULE #1 (OBEY BEFORE ANYTHING ELSE)
-Your `<thought>` block must be a **bulleted summary of under 50 words**. 
-- **PROHIBITED**: Explaining hex codes, ID calculations, alias chains, or script logic.
-- **PROHIBITED**: Narrating what the code will do or why you are using a certain utility method.
-- **MANDATORY**: Jump directly to **Step 1 — Data Dictionary** after your bullets. 
-If you catch yourself writing more than 50 words of reasoning, **STOP and start writing code immediately.**
+### Generation Thinking Constraint
+Extended thinking during generation turns has previously caused context exhaustion — Claude loops through alias chains and hex calculations in its reasoning, hits the context limit, and crashes before writing a single line of script. To prevent this: keep your internal reasoning to a short bulleted summary (target under 50 words). Do not narrate hex codes, ID calculations, alias chains, or script logic in your thought block. Jump directly to Step 1 — Data Dictionary and start writing. If you notice your reasoning expanding beyond a few bullets, stop immediately and write code.
 
 ### Data Blueprint Workflow (MANDATORY)
 Follow this exact 3-step pattern for every generation turn. Do NOT deviate:
 1. **Step 1 — Data Dictionary**: Summarize the interview answers into a compact `brand_data` Python dictionary (hex codes, mode names, font choices, layer count). This is the ONLY planning you do.
 2. **Step 2 — Script**: 
-    - **A. Shared Utility**: You MUST first write the code from `references/06-generator-utility.md` into a file named `generator_utils.py`.
+    - **A. Shared Utility**: Write the code from `references/06-generator-utility.md` into a file named `generator_utils.py`.
     - **B. Generation Script**: Write your generation script (Turn A, B, or C). Import the generator using `from generator_utils import DesignTokenGenerator`. 
     - **C. Persistence (FAIL-SAFE)**: Do NOT pickle the `gen` object directly. Use `pickle.dump(gen.to_dict(), f)` to save state as a plain dictionary. In the next turn, load the dict and reconstruct with `gen = DesignTokenGenerator.from_dict(pickle.load(f))`. This removes all module-path dependencies and ensures the state is always loadable regardless of the script's `__main__` context.
+    - **D. Loop**: Loop through your `brand_data` calling `create_token` and `nest_token`. Use the self-correcting prefix stripping and backfilling guards built into the utility.
+3. **Step 3 — Output**: Execute and output the ZIP.
+    - **Zero narration during generation**: Do not explain the output or summarize what was generated. Deliver the ZIP widget, then proceed to Turn D (token count table). The follow-up conversation in Phase 6 of the handoff file happens after this.
 
-    - **D. Loop**: Loop through your `brand_data` calling `create_token` and `nest_token`. You must use the self-correcting prefix stripping and backfilling guards built into the utility.
-3. **Step 3 — Output**: Execute and output the ZIP. 
-    - **ZERO NARRATION**: Do not explain the output, do not provide "Next Steps" narration, and do not summarize what was generated. The ZIP widget and the Token Count Table (Turn D) are the only allowed outputs.
-
-> **PERFORMANCE & STABILITY GUARDRAILS (OBEY OR RISK SYSTEM FAILURE):**
+> **Performance & Stability Guardrails** — Serialization errors and script timeouts silently break the output ZIP. Follow these to prevent them:
 > 1. **Default to Single-Script Generation**: Always write all generation phases in a **single `gen_all.py`** script. This runs all phases sequentially in memory and avoids all serialization problems (The "No Wasted Runs" Rule). Only split into separate scripts if token count exceeds ~1000 and context truncation is a critical risk.
 > 2. **No Cross-Script Pickle of Class Instances**: Never pickle a `DesignTokenGenerator` instance across different scripts. Pickle stores class module paths (e.g. `__main__`) which break when loaded in a different script. If splitting is unavoidable, define the class in a shared `generator_core.py`, OR save state as a plain JSON dict via `to_dict()`.
 > 3. **No Bespoke Logic**: Do NOT "invent" custom loop logic. Use the patterns in `references/06-generator-utility.md`.
 > 4. **Resumption Rule**: If interrupted (Continue button), pick up immediately from where you left off in the script. Do NOT repeat reasoning.
 > 5. **Script Conciseness**: Rely on the blueprint patterns to keep the Python payload small.
 
-> **ALIAS INTEGRITY & BACKFILLING (CRITICAL):**
-> Broken aliases cause silent Figma import failures. You must verify every link:
-> 1. **The Backfilling Rule (Fail-Fast)**: If a structural collection (Density, Responsive, Layout) requires a value NOT in your current Primitives scale (e.g., 30px lineHeight), you **must stop immediately** and add that value to the `Primitives` collection. The `create_token` utility will raise a `KeyError` if you attempt to alias a missing Primitive — do not ignore this.
-> 2. **Verification Step**: Before outputting Turn C, run a mental "Pre-flight" check. Every `aliasData` targetVariableName MUST exist in the parent file. Check every token for mandatory `$value`.
-> 3. **Pre-Generation Coverage Audit (MANDATORY)**: 
->     - Before Phase A: N/A.
->     - Before Phase B: Run `validate_responsive_coverage`.
->     - Before Phase C: Run `validate_semantic_coverage`.
-> 4. **Mandatory Pre-CC Semantic Audit**: Before writing Component Colors, you MUST build a flat `cc_to_sem` intent map and call `validate_semantic_coverage()` against it. If any gap is found (e.g. `border/subtle` missing from Semantic), add it to Semantic first. Never allow a "VariableID:0:0" to be written to Component Colors.
-> 4. **Icon Mapping**: The `color/icon/*` group in Component Colors should alias `Theme` for general UI roles (default, muted, brand, error, etc.), unless a specific 4-layer semantic icon layer was requested.
-> 4. **Mandatory $value (Real Value Rule)**: `$value` on alias tokens is a placeholder but must be structural. Use the **Actual Resolved Value** for numbers and strings (safety fallback). Use a **Black Object** for colors. String tokens REQUIRE `"com.figma.type": "string"` at all layers, and **Primitive Strings DO have scopes**. NO curly braces. See `references/03-json-format.md`.
-> 5. **Typography Completeness Check**: Before writing Typography, explicitly list every role × every property (fontSize, lineHeight, letterSpacing, fontFamily, fontWeight) as a checklist. Verify all 5 are present for every role. A missing property = a dropped token in Figma.
-> 6. **Semantic Path Verification**: When referencing Semantic in `Component Colors`, verify that the specific path (e.g. `surface/raised`) was actually generated in the Semantic collection. It is not enough to check if the collection exists; you must check the path completeness.
-> 7. **Path Normalization (MANDATORY)**: Always use `.lower()` when constructing path strings in your Python logic (e.g. `path = f"font/lineheight/{role}".lower()`). Special care for `lineheight`, `letterspacing`, `fontweight` — these must NOT be camelCase in any script lookup, prebuild, or registry call. Normalization must happen at **construction**, not just at lookup.
-> 8. **Pre-Generation Coverage Audit (MANDATORY)**: Before building any collection, run the `validate_responsive_coverage` method provided in `06-generator-utility.md`. If it fails, you MUST go back and add the missing primitives to your Stage A script. Never proceed to aliasing until the audit passes.
+> **Alias Integrity & Backfilling** — Broken aliases cause silent Figma import failures (the variable panel shows VariableID:0:0 with no warning). Verify every link:
+> 1. **The Backfilling Rule**: If a structural collection (Density, Responsive, Layout) requires a value NOT in your current Primitives scale (e.g., 30px lineHeight), stop immediately and add that value to the `Primitives` collection. The `create_token` utility will raise a `KeyError` if you attempt to alias a missing Primitive — do not ignore this.
+> 2. **Verification Step**: Before outputting Turn C, run a mental "Pre-flight" check. Every `aliasData` targetVariableName must exist in the parent file. Check every token for mandatory `$value`.
+> 3. **Pre-Generation Coverage Audit**: 
+>     - Before Turn A: N/A.
+>     - Before Turn B: Run `validate_responsive_coverage`.
+>     - Before Turn C: Run `validate_semantic_coverage`.
+> 4. **Mandatory Pre-CC Semantic Audit**: Before writing Component Colors, build a flat `cc_to_sem` intent map and call `validate_semantic_coverage()` against it. If any gap is found (e.g. `border/subtle` missing from Semantic), add it to Semantic first. Never allow a "VariableID:0:0" to be written to Component Colors.
+> 5. **Icon Mapping**: The `color/icon/*` group in Component Colors should alias `Theme` for general UI roles (default, muted, brand, error, etc.), unless a specific 4-layer semantic icon layer was requested.
+> 6. **Mandatory $value (Real Value Rule)**: `$value` on alias tokens is a placeholder but must be structural. Use the **Actual Resolved Value** for numbers and strings (safety fallback). Use a **Black Object** for colors. String tokens REQUIRE `"com.figma.type": "string"` at all layers, and **Primitive Strings DO have scopes**. NO curly braces. See `references/03-json-format.md`.
+> 7. **Typography Completeness Check**: Before writing Typography, explicitly list every role × every property (fontSize, lineHeight, letterSpacing, fontFamily, fontWeight) as a checklist. Verify all 5 are present for every role. A missing property = a dropped token in Figma.
+> 8. **Semantic Path Verification**: When referencing Semantic in `Component Colors`, verify that the specific path (e.g. `surface/raised`) was actually generated in the Semantic collection. It is not enough to check if the collection exists; you must check the path completeness.
+> 9. **Path Normalization**: Always use `.lower()` when constructing path strings in your Python logic (e.g. `path = f"font/lineheight/{role}".lower()`). Special care for `lineheight`, `letterspacing`, `fontweight` — these must NOT be camelCase in any script lookup, prebuild, or registry call. Normalization must happen at **construction**, not just at lookup.
+> 10. **Pre-Generation Coverage Audit — All Collections**: Before building any collection, run `validate_responsive_coverage` from `06-generator-utility.md`. If it fails, add the missing primitives to your Turn A script before saving the Primitives collection. Never proceed to aliasing until the audit passes.
 
-**OUTPUT CONSTRAINT CRITICAL RULE:**
-You must ONLY output valid `.zip` files containing the structured JSON. NEVER output `.skill` files or dump massive scripts to the user. Do not wrap the output in proprietary abstractions.
+**Output constraint:** Output only valid `.zip` files containing the structured JSON. Do not output `.skill` files or dump raw scripts — this confuses users who expect ready-to-import ZIPs and risks context truncation.
 
-> **CRITICAL PERFORMANCE RULE FOR PATH 2:** Do NOT attempt to write one giant script or generate all JSON in a single turn. You must safely break the generation across multiple turns as instructed below. Wait for the user to reply "Next" before proceeding. 
+> **Critical performance rule for Path 2:** Do NOT attempt to write one giant script or generate all JSON in a single turn. Break the generation across multiple turns as instructed below. Wait for the user to reply "Next" before proceeding.
 
-> **CONSOLIDATED ZIP RULE**: You must NOT under any circumstances output a ZIP widget in Turn A or Turn B. Only the final `design-tokens.zip` widget should be delivered during **TURN C**. The AI must hold the JSON data in memory or session state until the final compilation phase.
+> **Consolidated ZIP rule**: Do NOT output a ZIP widget in Turn A or Turn B. Only the final `design-tokens.zip` widget should be delivered during **TURN C**. Hold the JSON data in memory or session state until the final compilation phase.
 
 ---
 
@@ -293,7 +288,7 @@ Calculate the JSON for these collections ONLY (Save to memory, NO ZIP OUTPUT YET
 1. **Primitives:** full colour palette + alpha variants (flat-sibling pattern) + all font tokens under `font/` group + layout primitive values + spacing + shadow geometry + borderWidth (0.3/0.5/0.8/1/2/4) + radius + blur
 2. **Theme:** every surface/text/border/interactive/feedback/overlay group, all states + shadow colour tokens
 
-*Stop here. Explicitly tell the user: "Phase A complete (Primitives & Theme). Type **Next** to generate structural collections (Responsive, Density, Layout, Effects)."*
+*Stop here. Explicitly tell the user: "Turn A complete (Primitives & Theme). Type **Next** to generate structural collections (Responsive, Density, Layout, Effects)."*
 
 ---
 
@@ -306,7 +301,7 @@ Calculate the JSON for these collections ONLY (Save to memory, NO ZIP OUTPUT YET
 3. **Layout:** Layout structural variables (if selected)
 4. **Effects:** shadow sm/md/lg/xl (colour → Theme, geometry → Primitives) + blur tokens
 
-*Stop here. Explicitly tell the user: "Phase B complete. Type **Next** to generate the final component collections and compile the ZIP."*
+*Stop here. Explicitly tell the user: "Turn B complete. Type **Next** to generate the final component collections and compile the ZIP."*
 
 ---
 
@@ -319,7 +314,7 @@ Calculate the JSON for these collections ONLY:
 3. **Component Colors:** every component × every variant × every state × every layer + icon duotone tokens
 4. **Component Dimensions:** all padding/gap (→ Density) + all radius/borderWidth (→ Responsive)
 
-**CRITICAL STEP:** Now take the JSON from Turn A, Turn B, and Turn C. Package them all together and output **ONE SINGLE `.zip` WIDGET** containing everything. The structure MUST be folders numbered by import order (e.g. `1. Primitives`, `2. Theme`). No intermediate ZIPs or nested archives.
+**Critical step:** Now take the JSON from Turn A, Turn B, and Turn C. Package them all together and output **ONE SINGLE `.zip` WIDGET** containing everything. The structure must be folders numbered by import order (e.g. `1. Primitives`, `2. Theme`). No intermediate ZIPs or nested archives.
 
 *Automatically proceed to Turn D.*
 
