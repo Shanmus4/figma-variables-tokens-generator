@@ -1,5 +1,6 @@
-> **DYNAMIC INTELLIGENT DROPDOWNS (CRITICAL RULE):**
-> If the user provided existing tokens (from Figma or Code in Turns 1/2), you MUST intelligently adapt the questions in Turns 4-9 based on your analysis. 
+> - **PROACTIVE RECOMMENDATIONS (MANDATORY)**: Based on the Brand & Context from Turn 3, the AI MUST act as a design expert.
+>     - **Label injection**: Inject your recommendation directly into the question string. Format: `[Rec: [Value]] [Original Question]`. (e.g. `[Rec: Blue] Primary brand colour?`)
+>     - **Option tagging**: Use `[Recommended for [Project Context]]` for the corresponding dropdown option.
 > - **NEVER SKIP A QUESTION.** Every question in Turns 4-9 MUST still be asked, even if you can infer the answer. The user must always have the chance to confirm or change.
 > - **Contextualize the question:** Tell the user what you found. (e.g., *"I see your current system only has a Light mode."* or *"I see these tokens came from a Web project."*)
 > - **Inject dynamic choices (LITERAL STRINGS):** Modify your dropdown choices to include keeping their existing setup versus expanding/changing it. You MUST use the format: `Keep existing: [Feature Name] (e.g. [Full Token Example])`. **NEVER** shorten or summarize the examples. (e.g. `Keep existing: camelCase (colorButtonPrimary)`).
@@ -7,16 +8,17 @@
 > - Apply this intelligence to Product Type (Q2), Colours (Q3-Q6), Layer Architecture (Q7), Code Syntax (Q17), and Token naming (Q18). Adapt the dropdown OPTIONS based on what you learned — but still present the dropdown and wait for the user's selection.
 
 
-### TURN 4 — Product Type + Colours (dropdowns)After the codebase question is resolved, show these four dropdowns together:
+### TURN 4 — Product Type + Colours (dropdowns)
+After the brand and context are resolved, show these four dropdowns together:
 
-**Q2** *(ask_user_input — single_select)*: "What kind of product are you building?"
-- `Web app`
-- `Mobile app`
-- `Web + Mobile`
-- `Desktop app`
+**Q2** *(ask_user_input — single_select)*: "What kind of product are you building? [Rec: [Value]]"
+- `Web app (e.g. Next.js, React, SaaS Dashboard)`
+- `Mobile app (e.g. iOS, Android, React Native)`
+- `Web + Mobile (e.g. Cross-platform design system)`
+- `Desktop app (e.g. Electron, Windows/Mac application)`
 - `Something else — I'll describe`
 
-**Q3** *(ask_user_input — single_select)*: "Primary brand colour?"
+**Q3** *(ask_user_input — single_select)*: "Primary brand colour? [Rec: [Value]]"
 - `I'll paste a hex code (e.g. #3B82F6)`
 - `Blue — confident, trustworthy (e.g. #2563EB)`
 - `Green — growth, health, success (e.g. #16A34A)`
@@ -25,17 +27,17 @@
 - `Red — bold, urgent (e.g. #DC2626)`
 - `Custom — I'll describe`
 
-**Q4** *(ask_user_input — single_select)*: "Secondary / accent colour direction?"
-- `Complementary — opposite on the colour wheel (high contrast, energetic)`
-- `Analogous — adjacent tones (harmonious, cohesive)`
-- `Neutral accent — muted, desaturated (professional, calm)`
-- `Monochromatic — lighter/darker tint of primary (minimal)`
+**Q4** *(ask_user_input — single_select)*: "Secondary / accent colour direction? [Rec: [Value]]"
+- `Complementary — opposite on the colour wheel (e.g. High contrast, energetic)`
+- `Analogous — adjacent tones (e.g. Harmonious, cohesive)`
+- `Neutral accent — muted, desaturated (e.g. Professional, calm)`
+- `Monochromatic — lighter/darker tint of primary (e.g. Minimalist)`
 - `Custom — I'll provide the hex`
 
-**Q5** *(ask_user_input — single_select)*: "Neutral / grey palette style?"
-- `Cool grey / blue-grey (slight blue tint — e.g. Tailwind Slate)`
-- `Warm grey / sand (slight yellow-beige tint — e.g. Tailwind Stone)`
-- `Pure neutral grey (no tint — e.g. Tailwind Gray)`
+**Q5** *(ask_user_input — single_select)*: "Neutral / grey palette style? [Rec: [Value]]"
+- `Cool grey / blue-grey (e.g. Tailwind Slate — slight blue tint)`
+- `Warm grey / sand (e.g. Tailwind Stone — slight yellow-beige tint)`
+- `Pure neutral grey (e.g. Tailwind Gray — no tint)`
 - `Custom — I'll describe`
 
 > If Q3 answer is "I'll paste a hex code" or Q4 is "Custom", ask for the hex as a follow-up open-text question before continuing.
@@ -44,17 +46,17 @@
 
 ### TURN 5 — Colour Modes + Architecture
 
-**Q6** *(ask_user_input — single_select)*: "Colour modes?"
-- `Light only`
-- `Dark only`
-- `Both light and dark`
+**Q6** *(ask_user_input — single_select)*: "Colour modes? [Rec: [Value]]"
+- `Light only (e.g. Single theme system)`
+- `Dark only (e.g. Dark-first digital products)`
+- `Both light and dark (e.g. Adaptive system with full theme support)`
 - `Custom (including High Contrast / accessibility themes)`
 
-**Q7** *(ask_user_input — single_select)*: "Token layer architecture?"
-- `1-layer — Primitives + Typography + optional collections. Smallest system. Good for prototypes or tiny teams.`
-- `2-layer — Primitives + Theme + Typography + optional. Standard for most products.`
-- `3-layer — Primitives + Theme + Component Colors + Typography + optional. Per-component colour tokens. Includes Component Dimensions automatically.`
-- `4-layer — Primitives + Theme + Semantic + Component Colors + Typography + optional. Full enterprise depth. Includes Component Dimensions automatically.`
+**Q7** *(ask_user_input — single_select)*: "Token layer architecture? [Rec: [Value]]"
+- `1-layer — Primitives + Typography (e.g. Prototypes or minimal systems)`
+- `2-layer — Primitives + Theme + Typography (e.g. Standard scale for most apps)`
+- `3-layer — Primitives + Theme + Component Colors + Typography (e.g. Design-to-Dev parity with component variables)`
+- `4-layer — Primitives + Theme + Semantic + Component Colors + Typography (e.g. Enterprise systems with full semantic aliasing)`
 
 > ARCHITECTURE NOTE: Component Colors AND Component Dimensions are automatically included in 3-layer and 4-layer. Do NOT ask the user again if they want these collections when they have already chosen 3 or 4 layer.
 
@@ -64,19 +66,19 @@
 
 Show all optional collection questions as a batch. The Responsive collection is always included (it is mandatory — Typography and Component Dimensions both require it). Only ask about the truly optional ones:
 
-**Q8** *(ask_user_input — single_select)*: "Density collection? Controls padding + gap across compact / comfortable / spacious modes."
-- `Yes — include Density`
-- `No — use fixed spacing values`
+**Q8** *(ask_user_input — single_select)*: "Density collection? Controls padding + gap across compact / comfortable / spacious modes. [Rec: [Value]]"
+- `Yes — include Density (e.g. Responsive padding and spacing scales)`
+- `No — use fixed spacing values (e.g. Simple fixed-width layouts)`
 
-**Q9** *(ask_user_input — single_select)*: "Effects collection? Shadow and blur tokens with structured aliasing."
-- `Yes — include Effects`
+**Q9** *(ask_user_input — single_select)*: "Effects collection? Shadow and blur tokens with structured aliasing. [Rec: [Value]]"
+- `Yes — include Effects (e.g. Elevation1, Shadow/High, Glassmorphism)`
 - `No`
 
-**Q10** *(ask_user_input — single_select)*: "Layout collection? Grid column/margin/gutter specs per breakpoint (xs → xxl)."
-- `Yes — include Layout`
+**Q10** *(ask_user_input — single_select)*: "Layout collection? Grid column/margin/gutter specs per breakpoint (xs → xxl). [Rec: [Value]]"
+- `Yes — include Layout (e.g. Grid margin/gutter variables for web)`
 - `No`
 
-**Q11** *(ask_user_input — single_select)*: "Any additional custom collections? (e.g. Motion, Z-index, Elevation)"
+**Q11** *(ask_user_input — single_select)*: "Any additional custom collections? (e.g. Motion, Z-index, Elevation) [Rec: [Value]]"
 - `No — that's everything`
 - `Yes — I'll describe`
 
@@ -87,57 +89,49 @@ Show all optional collection questions as a batch. The Responsive collection is 
 ### TURN 7 — Component Details
 *(Only show if architecture is 3-layer or 4-layer)*
 
-**Q12** *(ask_user_input — single_select)*: "Which components should be included in Component Colors?"
-- `All standard components — Includes all interactive (Button, Input, Switch, Tooltip, Dropdown...) and static (Card, Modal, Badge, Navbar, Table...) roles.`
+**Q12** *(ask_user_input — single_select)*: "Which components should be included in Component Colors? [Rec: [Value]]"
+- `All standard components (e.g. Button, Input, Card, Modal, Navbar, Table...)`
 - `Selective — I'll list only the specific components I need`
 
-> If "Selective": ask open-text — "List the exact components you need — I'll map them to the appropriate interactive or static patterns." — wait for response.
-
-
-Wait for the response. Then show:
-
-**Q13** *(ask_user_input — single_select)*: "How should Component Colors be organised?"
-- `Split — interactive (button, input, toggle…) vs non-interactive (card, badge, avatar…)`
-- `Flat — all components at the same level`
+**Q13** *(ask_user_input — single_select)*: "How should Component Colors be organised? [Rec: [Value]]"
+- `Split — interactive vs non-interactive (e.g. button/input vs card/badge)`
+- `Flat — all components at the same level (e.g. button/primary, card/default)`
 - `Custom — I'll describe my grouping`
 
-**Q14** *(ask_user_input — single_select)*: "Icon token needs?"
-- `Fill + stroke + duotone — standard icons with secondary path support`
-- `Fill + stroke + duotone + background — icons inside a coloured container (filled icon buttons, icon chips)`
-- `Fill + stroke only — no duotone, no background`
+> If Q12 is "Selective": ask open-text — "List the exact components you need — I'll map them to the appropriate interactive or static patterns." — wait for response.
+
+**Q14** *(ask_user_input — single_select)*: "Icon token needs? [Rec: [Value]]"
+- `Fill + stroke + duotone (e.g. standard icons with secondary path support)`
+- `Fill + stroke + duotone + background (e.g. icons inside a coloured container)`
+- `Fill + stroke only (e.g. Simple stroke-only icon set)`
 
 ---
 
 ### TURN 8 — Typography + Fonts
 
-**Q15** *(ask_user_input — single_select)*: "Typography scale?"
-- `Standard 12 roles — display, heading, subheading, body-lg, body, body-sm, label-lg, label, label-sm, caption, overline, code`
-- `Extended 16+ roles — adds display-sm, heading-sm, heading-lg, body-strong, numeric/tabular`
+**Q15** *(ask_user_input — single_select)*: "Typography scale? [Rec: [Value]]"
+- `Standard 12 roles (e.g. Display, Header, Body, Label, Caption, Code)`
+- `Extended 16+ roles (e.g. Adding Strong, Large, and Numeric variants)`
 - `Custom — I'll describe the roles I need`
 
-**Q16** *(ask_user_input — single_select)*: "Fonts?"
-- `Inter for everything (placeholder — easy to swap in Figma later)`
-- `Specify now — I'll type the font names`
-- `System font stack`
+**Q16** *(ask_user_input — single_select)*: "Fonts? [Rec: [Value]]"
+- `Inter for everything (e.g. Google Fonts / Inter placeholders)`
+- `Specify now (e.g. Custom names like 'Roboto' or 'Outfit')`
+- `System font stack (e.g. -apple-system, sans-serif)`
 
 > If "Specify now": ask open-text — "Primary font (body text)? Display/heading font (if different)? Monospace font for code (optional)?" — wait for response before continuing.
 
----
-
-### TURN 9 — Naming + Code Syntax
-
-**Q17** *(ask_user_input — single_select)*: "Token code syntax format?"
-- `CSS Custom Properties (e.g. --color-button-primary-background)`
-- `Tailwind / Kebab-case (e.g. color-button-primary-background)`
-- `JavaScript / React camelCase (e.g. colorButtonPrimaryBackground)`
-- `Android / XML underscore_case (e.g. color_button_primary_background)`
-- `iOS / Swift PascalCase (e.g. ColorButtonPrimaryBackground)`
+**Q17** *(ask_user_input — single_select)*: "Token code syntax format? [Rec: [Value]]"
+- `CSS Custom Properties (e.g. --color-button-background)`
+- `Tailwind / Kebab-case (e.g. color-button-background)`
+- `JavaScript / React camelCase (e.g. colorButtonBackground)`
+- `Android / XML underscore_case (e.g. color_button_background)`
+- `iOS / Swift PascalCase (e.g. ColorButtonBackground)`
 - `Custom format (I'll describe a different syntax)`
 
-**Q18** *(ask_user_input — single_select)*: "Token naming convention?"
-> *Rule: If 2-layer architecture was chosen in Q7, OMIT the 'Component-first' option.*
+**Q18** *(ask_user_input — single_select)*: "Token naming convention? [Rec: [Value]]"
 - `Role-based (e.g. color/surface/primary or color/text/secondary)`
-- `Component-first (e.g. color/button/primary/background)` (HIDDEN if 2-layer chosen)
+- `Component-first (e.g. color/button/primary/background/state)` (HIDDEN if 2-layer chosen)
 - `Material Design (e.g. color/surface or color/on-surface)`
 - `IBM Carbon (e.g. color/background or color/text-primary)`
 - `Custom (I'll describe a different naming structure)`
@@ -245,11 +239,11 @@ Follow this exact 3-step pattern for every generation turn. Do NOT deviate:
 3. **Step 3 — Output**: Execute and output the ZIP. No narration between steps.
 
 > **PERFORMANCE & STABILITY GUARDRAILS (OBEY OR RISK SYSTEM FAILURE):**
-> 1. **Default to Single-Script Generation**: Always write all generation phases in a **single `gen_all.py`** script. This runs all phases sequentially in memory and avoids all serialization problems. Only split into separate phase scripts if token count exceeds ~1000 and context truncation is a critical risk.
-> 2. **No Cross-Script Pickle of Class Instances**: Never pickle a `DesignTokenGenerator` instance across different scripts. Pickle stores class module paths (e.g. `__main__`) which break when loaded in a different script. If splitting is unavoidable, define the class in a shared `generator_core.py` and import it in every script.
-> 3. **No Bespoke Logic:** Do NOT "invent" custom loop logic. Use the patterns in `references/06-generator-utility.md`.
-> 2. **Resumption Rule:** if interrupted (Continue button), pick up immediately from where you left off in the script. Do NOT repeat reasoning.
-> 3. **Script Conciseness:** Rely on the blueprint patterns to keep the Python payload small.
+> 1. **Default to Single-Script Generation**: Always write all generation phases in a **single `gen_all.py`** script. This runs all phases sequentially in memory and avoids all serialization problems (The "No Wasted Runs" Rule). Only split into separate scripts if token count exceeds ~1000 and context truncation is a critical risk.
+> 2. **No Cross-Script Pickle of Class Instances**: Never pickle a `DesignTokenGenerator` instance across different scripts. Pickle stores class module paths (e.g. `__main__`) which break when loaded in a different script. If splitting is unavoidable, define the class in a shared `generator_core.py`, OR save state as a plain JSON dict via `to_dict()`.
+> 3. **No Bespoke Logic**: Do NOT "invent" custom loop logic. Use the patterns in `references/06-generator-utility.md`.
+> 4. **Resumption Rule**: If interrupted (Continue button), pick up immediately from where you left off in the script. Do NOT repeat reasoning.
+> 5. **Script Conciseness**: Rely on the blueprint patterns to keep the Python payload small.
 
 > **ALIAS INTEGRITY & BACKFILLING (CRITICAL):**
 > Broken aliases cause silent Figma import failures. You must verify every link:
@@ -272,7 +266,7 @@ You must ONLY output valid `.zip` files containing the structured JSON. NEVER ou
 
 > **CRITICAL PERFORMANCE RULE FOR PATH 2:** Do NOT attempt to write one giant script or generate all JSON in a single turn. You must safely break the generation across multiple turns as instructed below. Wait for the user to reply "Next" before proceeding. 
 
-> **CONSOLIDATED ZIP RULE**: Do NOT output the `.zip` file widget in Turn A or Turn B. Keep the JSON payload in your memory. You must only output the final `design-tokens.zip` widget during **TURN C**. The internal structure MUST be **folders** numbered by their import order (e.g., `1. Primitives/`, `2. Theme/`) as governed by the JSON Format reference. No nested ZIPs.
+> **CONSOLIDATED ZIP RULE**: You must NOT under any circumstances output a ZIP widget in Turn A or Turn B. Only the final `design-tokens.zip` widget should be delivered during **TURN C**. The AI must hold the JSON data in memory or session state until the final compilation phase.
 
 ---
 
@@ -320,7 +314,7 @@ Calculate the JSON for these collections ONLY:
 3. **Component Colors:** every component × every variant × every state × every layer + icon duotone tokens
 4. **Component Dimensions:** all padding/gap (→ Density) + all radius/borderWidth (→ Responsive)
 
-**CRITICAL STEP:** Now take the JSON from Turn A, Turn B, and Turn C. Package them all together and output **ONE SINGLE `.zip` WIDGET** containing everything.
+**CRITICAL STEP:** Now take the JSON from Turn A, Turn B, and Turn C. Package them all together and output **ONE SINGLE `.zip` WIDGET** containing everything. The structure MUST be folders numbered by import order (e.g. `1. Primitives`, `2. Theme`). No intermediate ZIPs or nested archives.
 
 *Automatically proceed to Turn D.*
 

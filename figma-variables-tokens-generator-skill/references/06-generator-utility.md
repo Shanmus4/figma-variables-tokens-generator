@@ -208,6 +208,39 @@ def make_family(gen, tree, family, shades, alpha_hex):
 
 **Rule:** Never define a helper that accepts `(key, r, g, b)` or `(key, r, g, b, a, hex)` tuples. The hex string is the single source of truth. Always derive r/g/b from it.
 
+### 4.1 Loop Safety & Unpacking (CRITICAL)
+**THE ERROR:** `ValueError: too many values to unpack (expected 2)`
+**THE CAUSE:** Unpacking a 3-item tuple into 2 variables: `for key, val in [("a", 1, "#f00")]`.
+**THE GUARDRAIL:** Always use explicit unpacking or index access if the data structure is complex. When generating primitives in loops, verify the tuple length matches the unpacking statement exactly. Preferred pattern:
+```python
+# Use 2-tuples for simple (path, value) mapping
+for path, hex_str in [("white", "#ffffff"), ("black", "#000000")]:
+    ...
+```
+
+### 4.2 White/Black Alpha-Only Families — Canonical Pattern (CRITICAL)
+White and black are special cases — they have NO solid shades, only alpha variants. 
+ALWAYS use this exact 3-variable unpacking pattern. Never use 2-variable unpacking.
+
+```python
+# ✅ CORRECT — 3-tuple unpacking
+for family, components, hex_str in [
+    ("white", [1, 1, 1], "#FFFFFF"),
+    ("black", [0, 0, 0], "#000000")
+]:
+    for a_val, a_key in [(0.08,"a8"),(0.16,"a16"),(0.24,"a24"),(0.32,"a32"),
+                         (0.40,"a40"),(0.48,"a48"),(0.56,"a56"),(0.64,"a64"),(1.0,"a100")]:
+        path = f"color/{family}/{a_key}"
+        t = gen.create_token(path, 10, "color",
+            value={"colorSpace":"srgb","components":components,"alpha":a_val,"hex":hex_str})
+        gen.nest_token(prim_tree, path, t)
+
+# ❌ WRONG — 2-variable unpacking on a 3-tuple
+for family, rgb in [("white",[1,1,1],"#FFFFFF"), ...]:  # ValueError!
+```
+
+**Why this is different from colour families:** `make_family()` handles brand-colored families (green, red, etc.) automatically. White and black are NOT passed to `make_family()` — they must be written manually using this pattern every time.
+
 ### 5. Multi-Mode ID Stability Rule (CRITICAL)
 
 **THE RULE:** Every token in a multi-mode collection (Theme, Responsive, Density, Layout) MUST have the SAME `variableId` across all its mode files. Figma uses the ID — not the path — to match modes to the same variable.

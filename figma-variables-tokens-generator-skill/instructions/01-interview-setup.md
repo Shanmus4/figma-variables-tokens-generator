@@ -42,7 +42,7 @@ Read these **3 files ONLY** before starting the questionnaire. Other reference f
 
 **Turn 1**: Existing Figma system?
 **Turn 2**: Existing codebase tokens?
-**Turn 3**: Token Prefix?
+**Turn 3**: Brand & Context
 **Turn 4**: Product Type + Colours
 **Turn 5**: Colour Modes + Architecture
 **Turn 6**: Optional Collections
@@ -120,20 +120,23 @@ Wait for the response. Then:
 
 ---
 
-### TURN 3 — Brand Name (Dynamic)
+### TURN 3 — Brand & Context (Dynamic Inference)
 
-If the user uploaded Figma files (Turn 1) or Code tokens (Turn 2), scan them for a brand name. 
-**If found:**
+The AI MUST proactively infer the Brand Name and Project Context to minimize user typing. 
+1. **Source 1 (High)**: Analyzed Figma/Code data from Turns 1/2.
+2. **Source 2 (Med)**: Current workspace path or Repository name.
+3. **Source 3 (Low)**: Fallback to "Generic [Context]" based on user prompt.
+
+**ACTION**: Present the inferred data for confirmation. Do NOT ask an open-ended "What is your name?" as the first step.
+
 Ask using `ask_user_input` (single_select):
-> "I see your brand is **[Brand Name]**. Which name should I use?"
-- `Keep: [Brand Name]`
-- `Custom — I'll type a different name`
+> "I've inferred your project is **[Brand Name]** for a **[Project Type]** (e.g. SaaS, E-commerce). Should I proceed with these defaults?"
+- `Yes — use [Brand Name] and [Project Type]`
+- `Change name only — I'll type a different brand name`
+- `Change context only — I'll type a different project context`
+- `Let me type both from scratch`
 
-If "Custom", ask as open text: "What's the name of your brand or product?" — wait for response.
-
-**If NO tokens were provided, or no brand name was found:**
-Ask as open text: "What's the name of your brand or product?"
-*(Wait for their response)*
+> If anything other than "Yes" is selected, ask follow-up open-text: "Please provide the correct Brand Name and/or Project Context (e.g. Fintech App, Retail Dashboard)." — wait for response.
 
 
 ---
