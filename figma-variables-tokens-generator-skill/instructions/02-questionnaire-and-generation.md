@@ -2,7 +2,7 @@
 > If the user provided existing tokens (from Figma or Code in Turns 1/2), you MUST intelligently adapt the questions in Turns 4-9 based on your analysis. 
 > - **NEVER SKIP A QUESTION.** Every question in Turns 4-9 MUST still be asked, even if you can infer the answer. The user must always have the chance to confirm or change.
 > - **Contextualize the question:** Tell the user what you found. (e.g., *"I see your current system only has a Light mode."* or *"I see these tokens came from a Web project."*)
-> - **Inject dynamic choices (MANDATORY EXAMPLES):** Modify your dropdown choices to include keeping their existing setup versus expanding/changing it. **ALL dropdown options MUST include a representative example in parentheses.** (e.g., `Keep existing: Light mode only`, `Expand to: Light + Dark modes`).
+> - **Inject dynamic choices (LITERAL STRINGS):** Modify your dropdown choices to include keeping their existing setup versus expanding/changing it. You MUST use the format: `Keep existing: [Feature Name] (e.g. [Full Token Example])`. **NEVER** shorten or summarize the examples. (e.g. `Keep existing: camelCase (colorButtonPrimary)`).
 > - **Architectural Dependencies:** Some questions depend on previous choices. (e.g., If the user chose a **2-layer architecture** in Q7, you **MUST NOT** offer `Component-first` naming in Q18, as 2-layer systems do not have a dedicated component layer). 
 > - Apply this intelligence to Product Type (Q2), Colours (Q3-Q6), Layer Architecture (Q7), Code Syntax (Q17), and Token naming (Q18). Adapt the dropdown OPTIONS based on what you learned — but still present the dropdown and wait for the user's selection.
 
@@ -127,20 +127,20 @@ Wait for the response. Then show:
 ### TURN 9 — Naming + Code Syntax
 
 **Q17** *(ask_user_input — single_select)*: "Token code syntax format?"
-- `CSS Custom Properties — Web standard format using double hyphens (e.g. --color-button-primary-background)`
-- `Tailwind / Kebab-case — Standard dash-separated naming for web/apps (e.g. color-button-primary-background)`
-- `JavaScript / React camelCase — Standard for JS systems (e.g. colorButtonPrimaryBackground)`
-- `Android / XML underscore — Snake_case format for Android development (e.g. color_button_primary_background)`
-- `iOS / Swift PascalCase — Capitalized format for iOS development (e.g. ColorButtonPrimaryBackground)`
-- `Custom format — I'll describe a different syntax`
+- `CSS Custom Properties (e.g. --color-button-primary-background)`
+- `Tailwind / Kebab-case (e.g. color-button-primary-background)`
+- `JavaScript / React camelCase (e.g. colorButtonPrimaryBackground)`
+- `Android / XML underscore_case (e.g. color_button_primary_background)`
+- `iOS / Swift PascalCase (e.g. ColorButtonPrimaryBackground)`
+- `Custom format (I'll describe a different syntax)`
 
 **Q18** *(ask_user_input — single_select)*: "Token naming convention?"
 > *Rule: If 2-layer architecture was chosen in Q7, OMIT the 'Component-first' option.*
-- `Role-based (Recommended) — Logical grouping by function. (e.g. color.surface.primary / color.text.secondary)`
-- `Component-first — Grouping by UI element. (e.g. color.button.secondary.default.background)` (HIDDEN if 2-layer chosen)
-- `Material Design — Industry standard naming. (e.g. color.surface / color.on-surface / color.surface-variant)`
-- `IBM Carbon — Industrial role naming. (e.g. color.background / color.layer-01 / color.text-primary)`
-- `Custom — I'll describe a different naming structure`
+- `Role-based (e.g. color/surface/primary or color/text/secondary)`
+- `Component-first (e.g. color/button/primary/background)` (HIDDEN if 2-layer chosen)
+- `Material Design (e.g. color/surface or color/on-surface)`
+- `IBM Carbon (e.g. color/background or color/text-primary)`
+- `Custom (I'll describe a different naming structure)`
 
 
 > *Conversational Tip:* Reassure the user that modern, scalable systems use terms like `surface/page` or `surface/default` for backgrounds, and `text/primary` for main text. They do not need to worry if they don't see the exact phrase "page background" in the examples.

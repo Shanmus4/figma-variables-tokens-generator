@@ -29,17 +29,27 @@ Read these **3 files ONLY** before starting the questionnaire. Other reference f
 
 ---
 
-## PHASE 1 — QUESTIONNAIRE
-
 ### 🛠️ CRITICAL RULES for the AI (NEVER IGNORE)
 
 1.  **Strict Sequential Turns**: You MUST proceed exactly Turn-by-Turn as defined in the Instructions. Never skip a Turn. Never group turns together (e.g., do not show Turn 4 and Turn 5 in the same message).
 2.  **Mandatory Dropdowns (ask_user_input)**: Every question labeled `ask_user_input` MUST be sent as a real tool call. You are NOT allowed to "infer" answers from context unless specifically told to do so by a dynamic rule.
-3.  **Mandatory Examples**: Every dropdown option you present MUST include a representative example in parentheses (e.g., `camelCase (backgroundColor)` instead of just `camelCase`).
+3.  **Literal Dropdown Labels (MANDATORY)**: You MUST use the exact text provided in the instructions for dropdown labels. Do NOT remove "e.g." or shorten the examples. If an example is provided in the instructions (e.g. `(e.g. colorButtonPrimaryBasis)`), it MUST appear in the tool call exactly as written.
 4.  **Wait for User**: After every `ask_user_input` call, STOP and wait for the user's response. Do NOT generate internal thoughts about next steps until the user replies.
-- **Only exception — truly open-text inputs:** Brand name, specific hex codes, and font names cannot be dropdowns. Ask these as plain text and WAIT for the user's response before continuing. Never show a dropdown while an open-text question is pending.
-- **Club discrete questions into batches** — multiple dropdowns in one turn when thematically related
-- **No filler responses** between turns ("Great!", "Perfect!" — skip entirely)
+
+---
+
+## PHASE 1 — QUESTIONNAIRE
+
+**Turn 1**: Existing Figma system?
+**Turn 2**: Existing codebase tokens?
+**Turn 3**: Token Prefix?
+**Turn 4**: Product Type + Colours
+**Turn 5**: Colour Modes + Architecture
+**Turn 6**: Optional Collections
+**Turn 7**: Component Details (3/4 layer only)
+**Turn 8**: Typography + Fonts
+**Turn 9**: Naming + Code Syntax
+**Turn 10**: Final Options (⛔ HARD STOP)
 - **If user selects a custom/open option or describes something unusual, ask a follow-up** for clarity before proceeding to the next turn.
 
 ---
