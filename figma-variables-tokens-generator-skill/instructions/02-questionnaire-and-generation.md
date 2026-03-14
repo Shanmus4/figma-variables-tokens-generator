@@ -1,6 +1,10 @@
-### TURN 4 — Product Type + Colours (dropdowns)
+> **DYNAMIC INTELLIGENT DROPDOWNS (CRITICAL RULE):**
+> If the user provided existing tokens (from Figma or Code in Turns 1/2), you MUST intelligently adapt the questions in Turns 4-9 based on your analysis. 
+> - **Contextualize the question:** Tell the user what you found. (e.g., *"I see your current system only has a Light mode."* or *"I see these tokens came from a Web project."*)
+> - **Inject dynamic choices:** Modify your dropdown choices to include keeping their existing setup versus expanding/changing it. (e.g., `Keep existing: Light mode only`, `Expand to: Light + Dark modes`).
+> - Apply this intelligence to Product Type (Q2), Colours (Q3-Q6), Layer Architecture (Q7), Naming Conventions (Q18), and Code Syntax (Q17). Do NOT just ask the default template questions if you already know the answer from their files.
 
-After the codebase question is resolved, show these four dropdowns together:
+### TURN 4 — Product Type + Colours (dropdowns)After the codebase question is resolved, show these four dropdowns together:
 
 **Q2** *(ask_user_input — single_select)*: "What kind of product are you building?"
 - `Web app`
