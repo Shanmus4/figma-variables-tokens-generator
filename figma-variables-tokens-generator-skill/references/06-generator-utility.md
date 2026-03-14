@@ -27,6 +27,18 @@ class DesignTokenGenerator:
             raise KeyError(f"PREBUILD MISS: Path '{key}' not found in ID map. Ensure it was added to prebuild_ids().")
         return id_map[key]
 
+    def validate_responsive_coverage(self, resp_size, resp_lh, resp_ls):
+        """Pre-flight audit for Responsive -> Primitive coverage. Run BEFORE save_mode('Primitives')."""
+        missing = []
+        for role, modes in resp_size.items():
+            for v in (modes if isinstance(modes, list) else modes.values()):
+                if f"font/size/{v}" not in self.token_registry: missing.append(f"font/size/{v}")
+        for role, modes in resp_lh.items():
+            for v in (modes if isinstance(modes, list) else modes.values()):
+                if f"font/lineheight/{v}" not in self.token_registry: missing.append(f"font/lineheight/{v}")
+        if missing:
+            raise KeyError(f"BACKFILL REQUIRED: Missing paths in Primitives. Add them BEFORE saving Primitives: {list(set(missing))}")
+
     def create_token(self, name, ns, type, value=None, scope=None, alias_target=None, alias_set=None, vid=None):
         path = name.lower()
         vid = vid or self.next_id(ns)
@@ -127,6 +139,9 @@ Claude then writes a short script that loops through the map and calls `create_t
 - **Special Tokens**: Just add a new key to the data map. Logic remains the same.
 
 ### 4. Colour Family Helper — Canonical Pattern (CRITICAL)
+
+**RULE: Backfill Timing (CRITICAL)**
+You MUST perform all `create_token` calls for Primitives (including backfilled values) **BEFORE** calling `save_mode("Primitives", ...)`. Any primitive added after the Primitives collection is saved will exist in the registry but will NOT be written to the output file, causing broken aliases in Responsive.
 
 When generating a full colour family (shades + alpha variants), always use this exact tuple shape: **(key: str, hex_str: str)** — never include raw r/g/b floats in the tuple. Parse them inside the helper.
 

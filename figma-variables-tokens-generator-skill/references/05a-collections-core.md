@@ -119,6 +119,9 @@ theme/overlay/tooltip       FRAME_FILL+SHAPE_FILL
 
 This collection provides breakpoint-aware values for all numerical tokens used by Typography and Component Dimensions. It aliases Primitives but maps values design-appropriately per breakpoint — NOT a blind 1:1 forward.
 
+> [!IMPORTANT]
+> **COVERAGE AUDIT:** Before generating the Responsive JSON, you MUST run `validate_responsive_coverage()` to ensure every value you intend to use (e.g. `lineheight: 52`) already exists as a path in your Primitives registry. If it doesn't, you must backfill it in Primitives BEFORE saving the Primitives mode file.
+
 ### font/size/* → FONT_SIZE
 Each token aliases a Primitives font/size value. Mobile uses smaller values, desktop uses larger.
 ```

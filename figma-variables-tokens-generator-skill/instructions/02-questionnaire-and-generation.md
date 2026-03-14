@@ -246,10 +246,11 @@ Follow this exact 3-step pattern for every generation turn. Do NOT deviate:
 > 4. **Mandatory $value (Real Value Rule)**: `$value` on alias tokens is a placeholder but must be structural. Use the **Actual Resolved Value** for numbers and strings (safety fallback). Use a **Black Object** for colors. String tokens REQUIRE `"com.figma.type": "string"` at all layers, and **Primitive Strings DO have scopes**. NO curly braces. See `references/03-json-format.md`.
 > 5. **Typography Completeness Check**: Before writing Typography, explicitly list every role × every property (fontSize, lineHeight, letterSpacing, fontFamily, fontWeight) as a checklist. Verify all 5 are present for every role. A missing property = a dropped token in Figma.
 > 6. **Semantic Path Verification**: When referencing Semantic in `Component Colors`, verify that the specific path (e.g. `surface/raised`) was actually generated in the Semantic collection. It is not enough to check if the collection exists; you must check the path completeness.
-> 8. **Path Normalization (MANDATORY)**: Always use `.lower()` when constructing path strings in your Python logic. Special care for `lineheight`, `letterspacing`, `fontweight` — these must NOT be camelCase in the script lookup or registry.
+> 7. **Path Normalization (MANDATORY)**: Always use `.lower()` when constructing path strings in your Python logic (e.g. `path = f"font/lineheight/{role}".lower()`). Special care for `lineheight`, `letterspacing`, `fontweight` — these must NOT be camelCase in any script lookup, prebuild, or registry call. Normalization must happen at **construction**, not just at lookup.
+> 8. **Pre-Generation Coverage Audit (MANDATORY)**: Before building any collection, run the `validate_responsive_coverage` method provided in `06-generator-utility.md`. If it fails, you MUST go back and add the missing primitives to your Stage A script. Never proceed to aliasing until the audit passes.
 
 **OUTPUT CONSTRAINT CRITICAL RULE:**
-You must ONLY output valid `.zip` files containing the structured JSON. NEVER output `.skill` files or dump massive scripts to the user. Do not wrap the output in proprietary skill abstractions.
+You must ONLY output valid `.zip` files containing the structured JSON. NEVER output `.skill` files or dump massive scripts to the user. Do not wrap the output in proprietary abstractions.
 
 > **CRITICAL PERFORMANCE RULE FOR PATH 2:** Do NOT attempt to write one giant script or generate all JSON in a single turn. You must safely break the generation across multiple turns as instructed below. Wait for the user to reply "Next" before proceeding. 
 
