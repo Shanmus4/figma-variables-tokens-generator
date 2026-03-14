@@ -230,6 +230,7 @@ density/gap/4xl         GAP   compact=64,  comfortable=96,  spacious=128
 
 ## Layout Collection
 **Mode files:** `xs.tokens.json`, `sm.tokens.json`, `md.tokens.json`, `lg.tokens.json`, `xl.tokens.json`, `xxl.tokens.json`
+**$metadata.modeName:** `"xs"`, `"sm"`, `"md"`, `"lg"`, `"xl"`, `"xxl"`
 **Aliases:** Primitives `layout/*`
 **Scope:** WIDTH_HEIGHT on ALL tokens
 

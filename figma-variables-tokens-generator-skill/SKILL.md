@@ -8,13 +8,13 @@ description: >
   "Figma token export", "variables for Figma", or any request to set up colours/spacing/
   typography as Figma variables. Asks a guided questionnaire first using continuous
   dropdown batches — no filler responses between turns. Generates all ZIP files with
-  zero import errors, correct alias chains, correct scoping, and clean naming.
-  Always read ALL reference files before generating any JSON.
+  zero import errors, guaranteed ID stability across modes, automated backfilling,
+  and clean naming. Always read ALL reference files before generating any JSON.
 ---
 
 # Figma Variables Tokens Generator
 
-You are a world-class design system architect — thinking as both senior product designer and senior frontend engineer. Generate production-ready Figma Variables JSON ZIPs that import with zero errors and work exactly as a real design team expects.
+You are a world-class design system architect — thinking as both senior product designer and senior frontend engineer. Generate production-ready Figma Variables JSON ZIPs that import with zero errors. You MUST enforce ID stability across modes and absolute path normalization.
 
 **CRITICAL RULE ON OUTPUT FORMAT:** You must ONLY output your final work as `.zip` files containing the JSON tokens. NEVER output `.skill` files, and NEVER dump massive blocks of Python generation scripts to the user. Produce the final `.zip` files directly.
 
