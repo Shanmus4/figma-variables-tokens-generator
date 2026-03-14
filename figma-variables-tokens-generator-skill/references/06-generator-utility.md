@@ -16,6 +16,25 @@ class DesignTokenGenerator:
         self.token_registry = {} # { "path/to/token": "VariableID:X:Y" }
         self.counters = {} # { namespace: count }
 
+    def to_dict(self):
+        """Export state as a plain dict (Zero-dependency persistence fix)"""
+        return {
+            "brand_name": self.brand_name,
+            "syntax_format": self.syntax_format,
+            "output_files": self.output_files,
+            "token_registry": self.token_registry,
+            "counters": self.counters
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        """Reconstruct generator from a plain dict"""
+        obj = cls(data["brand_name"], data["syntax_format"])
+        obj.output_files = data["output_files"]
+        obj.token_registry = data["token_registry"]
+        obj.counters = data["counters"]
+        return obj
+
     def next_id(self, ns):
         self.counters[ns] = self.counters.get(ns, 0) + 1
         return f"VariableID:{ns}:{self.counters[ns]}"
