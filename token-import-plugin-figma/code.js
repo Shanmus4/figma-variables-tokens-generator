@@ -41,20 +41,34 @@ async function checkConflicts(collections) {
     
     let newCount = 0, changedCount = 0, sameCount = 0
     const existingVars = localVars.filter(v => v.variableCollectionId === existing.id)
-    const incomingTokens = collData.modes[0].tokens
-    const modeId = existing.modes[0].modeId
+    
+    // Map local modes for comparison
+    const localModeMap = {}
+    existing.modes.forEach(m => localModeMap[m.name.toLowerCase()] = m.modeId)
 
-    for (const [path, token] of Object.entries(incomingTokens)) {
+    // Collect all unique variable paths defined in ANY incoming mode
+    const allIncomingPaths = new Set()
+    collData.modes.forEach(m => Object.keys(m.tokens).forEach(p => allIncomingPaths.add(p)))
+
+    for (const path of allIncomingPaths) {
       const local = existingVars.find(v => v.name === path)
       if (!local) {
         newCount++
       } else {
-        const localValue = local.valuesByMode[modeId]
-        if (isBetterEqual(localValue, token, local.resolvedType, varNameById)) {
-          sameCount++
-        } else {
-          changedCount++
+        // Compare across all modes present in the ZIP
+        let hasMismatch = false
+        for (const incomingMode of collData.modes) {
+          const modeId = localModeMap[incomingMode.modeName.toLowerCase()] || existing.modes[0].modeId
+          const localValue = local.valuesByMode[modeId]
+          const token = incomingMode.tokens[path]
+          
+          if (token && !isBetterEqual(localValue, token, local.resolvedType, varNameById)) {
+            hasMismatch = true
+            break
+          }
         }
+        if (hasMismatch) changedCount++
+        else sameCount++
       }
     }
     

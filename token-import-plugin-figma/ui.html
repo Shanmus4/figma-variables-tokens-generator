@@ -408,6 +408,8 @@ async function handleFile(file) {
                     folders[folder].push({ name: parts.pop(), entry });
                 }
             });
+            const folderCount = Object.keys(folders).length;
+            let currentFolder = 0;
             for (const [folder, files] of Object.entries(folders)) {
                 const modes = [];
                 for (const f of files) {
@@ -415,6 +417,8 @@ async function handleFile(file) {
                     modes.push({ modeName: f.name.replace('.tokens.json', '').replace('.json', ''), tokens: flattenTokens(JSON.parse(content)) });
                 }
                 if (modes.length > 0) collections.push({ name: folder.replace(/^\d+\.\s*/, ''), modes, tokenCount: Math.max(...modes.map(m => Object.keys(m.tokens).length)) });
+                currentFolder++;
+                document.getElementById('import-bar').style.width = `${30 + (currentFolder/folderCount)*30}%`;
             }
         }
         if (collections.length === 0) throw new Error("NO_VALID_DATA");
