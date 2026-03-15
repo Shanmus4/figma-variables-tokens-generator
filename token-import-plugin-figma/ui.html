@@ -402,7 +402,7 @@ async function handleFile(file) {
             zip.forEach((path, entry) => {
                 if (!entry.dir && (path.endsWith('.tokens.json') || path.endsWith('.json'))) {
                     const parts = path.split('/');
-                    const zipFallbackName = file.name.replace(/\.zip$/i, '').toUpperCase();
+                    const zipFallbackName = file.name.replace(/\.zip$/i, '');
                     const folder = parts.length > 1 ? parts[0] : zipFallbackName;
                     if (!folders[folder]) folders[folder] = [];
                     folders[folder].push({ name: parts.pop(), entry });
@@ -489,13 +489,15 @@ window.onmessage = (e) => {
 
         if (conflicts.length > 0 || newColls.length > 0) {
             document.getElementById('conflict-area').style.display = 'flex';
-            let html = '<div style="margin-top            conflicts.forEach(c => {
+            let html = '<div style="margin-top: 8px; display: flex; flex-direction: column; gap: 12px;">';
+            
+            conflicts.forEach(c => {
                 html += `
-                    <div style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
-                        <div style="font-weight: 900; text-transform: uppercase; font-size: 10px; margin-bottom: 6px; color: #000;">${c.name}</div>
+                    <div style="border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 8px;">
+                        <div style="font-weight: 900; text-transform: uppercase; font-size: 10px; margin-bottom: 4px; color: #000;">${c.name}</div>
                         
                         ${c.modeMismatch ? `
-                        <div style="background: rgba(0,0,0,0.03); padding: 4px; font-size: 8px; font-weight: 800; margin-bottom: 6px; display: flex; gap: 8px;">
+                        <div style="background: rgba(0,0,0,0.03); padding: 4px; font-size: 8px; font-weight: 800; margin-bottom: 4px; display: flex; gap: 8px;">
                             ${c.modeMismatch.added > 0 ? `<span style="color: #1e40af;">+ ${c.modeMismatch.added} NEW MODES</span>` : ''}
                             ${c.modeMismatch.removed > 0 ? `<span style="color: #991b1b;">- ${c.modeMismatch.removed} LESS MODES</span>` : ''}
                         </div>
@@ -509,15 +511,12 @@ window.onmessage = (e) => {
                         </div>
                     </div>`;
             });
-                       </div>
-                    </div>`;
-            });
 
             if (newColls.length > 0) {
                 html += `
-                    <div style="background: #f0f9ff; border: 1px dashed #0ba5e9; padding: 12px;">
-                        <div style="font-weight: 900; font-size: 10px; margin-bottom: 4px; color: #0369a1;">+ NEW COLLECTIONS DETECTED</div>
-                        <div style="font-family: var(--font-mono); font-size: 9px; color: #0369a1;">
+                    <div style="background: #f0f9ff; border: 1px dashed #0ba5e9; padding: 8px; margin-top: 4px;">
+                        <div style="font-weight: 900; font-size: 9px; margin-bottom: 2px; color: #0369a1;">+ NEW COLLECTIONS DETECTED</div>
+                        <div style="font-family: var(--font-mono); font-size: 8px; color: #0369a1;">
                             ${newColls.map(n => n.name).join(', ')}
                         </div>
                     </div>`;

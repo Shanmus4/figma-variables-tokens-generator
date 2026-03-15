@@ -45,7 +45,7 @@ async function checkConflicts(collections) {
   }
   
   const analysis = collections.map(collData => {
-    const existing = localCollections.find(c => c.name === collData.name)
+    const existing = localCollections.find(c => c.name.toLowerCase() === collData.name.toLowerCase())
     if (!existing) {
       return { name: collData.name, status: 'NEW', newCount: collData.tokenCount, changedCount: 0, sameCount: 0 }
     }
@@ -108,6 +108,7 @@ async function checkConflicts(collections) {
     // Check for Removed (Figma has it, ZIP doesn't)
     for (const normName in existingVarsByName) {
       if (!allIncomingPaths.has(normName)) {
+        console.log(`[LESS] Missing from ZIP: "${normName}"`)
         removedCount++
       }
     }
