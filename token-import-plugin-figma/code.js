@@ -62,11 +62,15 @@ async function checkConflicts(collections) {
 
     const allIncomingPaths = new Set()
     collData.modes.forEach(m => Object.keys(m.tokens).forEach(p => {
-      if (p && p.trim()) allIncomingPaths.add(p.trim())
+      if (p) {
+        // Normalize segments: "color / blue / 800" -> "color/blue/800"
+        const cleanPath = p.split('/').map(seg => seg.trim()).filter(Boolean).join('/')
+        if (cleanPath) allIncomingPaths.add(cleanPath)
+      }
     }))
 
-    const localModeNames = existing.modes.map(m => m.name.toLowerCase())
-    const incomingModeNames = collData.modes.map(m => m.modeName.toLowerCase())
+    const localModeNames = existing.modes.map(m => m.name) // Case sensitive
+    const incomingModeNames = collData.modes.map(m => m.modeName)
     
     // Check for mode changes
     const modesAdded = incomingModeNames.filter(name => !localModeNames.includes(name)).length
@@ -74,7 +78,7 @@ async function checkConflicts(collections) {
     const modeMismatch = modesAdded > 0 || modesRemoved > 0 ? { added: modesAdded, removed: modesRemoved } : null
 
     const localModeMap = {}
-    existing.modes.forEach(m => localModeMap[m.name.toLowerCase()] = m.modeId)
+    existing.modes.forEach(m => localModeMap[m.name] = m.modeId) // Case sensitive
 
     // Check for New and Changed
     for (const path of allIncomingPaths) {
@@ -84,11 +88,14 @@ async function checkConflicts(collections) {
       } else {
         let hasMismatch = false
         for (const incomingMode of collData.modes) {
-          const modeId = localModeMap[incomingMode.modeName.toLowerCase()] || existing.modes[0].modeId
+          const modeId = localModeMap[incomingMode.modeName] || existing.modes[0].modeId // Case sensitive
           const localValue = local.valuesByMode[modeId]
           const token = incomingMode.tokens[path]
           
           if (token && !isBetterEqual(localValue, token, local.resolvedType, varNameById, varCollById)) {
+            console.log(`[CONFLICT] Mismatch at ${path} (Mode: ${incomingMode.modeName})`)
+            console.log(`Local:`, localValue)
+            console.log(`Incoming:`, token)
             hasMismatch = true
             break
           }
@@ -120,8 +127,8 @@ async function checkConflicts(collections) {
 }
 
 function isBetterEqual(localValue, incomingToken, type, varNameById, varCollById) {
-  const localIsAlias = localValue && localValue.type === 'VARIABLE_ALIAS'
-  const incomingIsAlias = !!incomingToken.alias
+  const localIsAlias = !!(localValue && typeof localValue === 'object' && localValue.type === 'VARIABLE_ALIAS')
+  const incomingIsAlias = !!(incomingToken && incomingToken.alias)
 
   // Type mismatch (one is alias, other is raw)
   if (localIsAlias !== incomingIsAlias) return false

@@ -461,7 +461,8 @@ function flattenTokens(obj, prefix = '') {
     let res = {};
     for (const [k, v] of Object.entries(obj)) {
         if (k === '$metadata' || !v || typeof v !== 'object') continue;
-        const path = prefix ? `${prefix}/${k}` : k;
+        const cleanK = k.trim();
+        const path = prefix ? `${prefix}/${cleanK}` : cleanK;
         if (v.$value !== undefined) {
             const ext = v.$extensions || {};
             const ad = ext['com.figma.aliasData'];
@@ -488,26 +489,27 @@ window.onmessage = (e) => {
 
         if (conflicts.length > 0 || newColls.length > 0) {
             document.getElementById('conflict-area').style.display = 'flex';
-            let html = '<div style="margin-top: 12px; display: flex; flex-direction: column; gap: 16px;">';
-            
-            conflicts.forEach(c => {
+            let html = '<div style="margin-top            conflicts.forEach(c => {
                 html += `
-                    <div style="border-bottom: 1px solid #eee; padding-bottom: 12px; margin-bottom: 12px;">
-                        <div style="font-weight: 900; text-transform: uppercase; font-size: 11px; margin-bottom: 8px; color: #000;">${c.name}</div>
+                    <div style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
+                        <div style="font-weight: 900; text-transform: uppercase; font-size: 10px; margin-bottom: 6px; color: #000;">${c.name}</div>
                         
                         ${c.modeMismatch ? `
-                        <div style="background: rgba(0,0,0,0.03); padding: 6px; font-size: 9px; font-weight: 800; margin-bottom: 8px; display: flex; gap: 8px;">
+                        <div style="background: rgba(0,0,0,0.03); padding: 4px; font-size: 8px; font-weight: 800; margin-bottom: 6px; display: flex; gap: 8px;">
                             ${c.modeMismatch.added > 0 ? `<span style="color: #1e40af;">+ ${c.modeMismatch.added} NEW MODES</span>` : ''}
                             ${c.modeMismatch.removed > 0 ? `<span style="color: #991b1b;">- ${c.modeMismatch.removed} LESS MODES</span>` : ''}
                         </div>
                         ` : ''}
 
-                        <div style="display: flex; gap: 12px; font-size: 9px; font-weight: 800; white-space: nowrap;">
-                            <div style="display:flex; align-items:center; gap:4px; color: #1e40af;"><span style="width:7px; height:7px; border-radius:50%; background:#1e40af;"></span> ${c.newCount} NEW</div>
-                            <div style="display:flex; align-items:center; gap:4px; color: #991b1b;"><span style="width:7px; height:7px; border-radius:50%; background:#991b1b;"></span> ${c.changedCount} UPDATE</div>
-                            <div style="display:flex; align-items:center; gap:4px; color: #166534;"><span style="width:7px; height:7px; border-radius:50%; background:#166534;"></span> ${c.sameCount} SAME</div>
-                            <div style="display:flex; align-items:center; gap:4px; color: #d97706;"><span style="width:7px; height:7px; border-radius:50%; background:#d97706;"></span> ${c.removedCount} LESS</div>
+                        <div style="display: flex; gap: 8px; font-size: 8px; font-weight: 800; white-space: nowrap; overflow-x: auto;">
+                            <div style="display:flex; align-items:center; gap:3px; color: #1e40af;"><span style="width:6px; height:6px; border-radius:50%; background:#1e40af;"></span> ${c.newCount} NEW</div>
+                            <div style="display:flex; align-items:center; gap:3px; color: #991b1b;"><span style="width:6px; height:6px; border-radius:50%; background:#991b1b;"></span> ${c.changedCount} UPDATE</div>
+                            <div style="display:flex; align-items:center; gap:3px; color: #166534;"><span style="width:6px; height:6px; border-radius:50%; background:#166534;"></span> ${c.sameCount} SAME</div>
+                            <div style="display:flex; align-items:center; gap:3px; color: #d97706;"><span style="width:6px; height:6px; border-radius:50%; background:#d97706;"></span> ${c.removedCount} LESS</div>
                         </div>
+                    </div>`;
+            });
+                       </div>
                     </div>`;
             });
 
