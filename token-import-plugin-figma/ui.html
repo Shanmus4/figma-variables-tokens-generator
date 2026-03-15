@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Token Import - System Interface</title>
+<title>Token Collections Importer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
     :root {
-        --canvas-bg: #9a9a9a;
+        --canvas-bg: #ffffff;
         --panel-bg: #ffffff;
         --panel-dark: #000000;
         --border-color: #000000;
@@ -30,76 +30,101 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* Standard Brutalist Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--canvas-bg); border-left: 1px solid var(--border-color); }
+    ::-webkit-scrollbar-thumb { background: var(--panel-dark); }
+
     body {
         background-color: var(--canvas-bg);
         font-family: var(--font-sans);
         color: var(--text-main);
         display: flex;
         justify-content: center;
-        align-items: center;
+        align-items: flex-start;
         min-height: 100vh;
-        overflow: hidden;
+        overflow-x: hidden;
         background-image: linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
                           linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
         background-size: 20px 20px;
     }
 
     .system-environment {
-        position: relative;
         width: 100%;
-        height: 100vh;
-        padding: 20px;
-    }
-
-    /* ── Nav Cluster ── */
-    .nav-cluster {
+        padding: 24px 16px;
         display: flex;
         flex-direction: column;
-        gap: 4px;
-        margin-bottom: 20px;
+        gap: 20px;
+        position: relative;
     }
-    .tabs-row { display: flex; }
+
+    /* ── contact-overlay ── */
+    #contact-overlay {
+        position: fixed;
+        inset: 0;
+        background: #ffffff;
+        z-index: 1000;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 40px;
+        gap: 24px;
+    }
+    #contact-overlay.active { display: flex; }
+
+    /* ── Header ── */
+    .app-header {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .main-title {
+        font-family: var(--font-sans);
+        font-size: 28px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: -1.2px;
+        line-height: 1;
+        color: var(--panel-dark);
+    }
+
+    .tabs-row { display: flex; gap: 0; }
     .tab {
-        padding: 6px 12px;
+        padding: 8px 16px;
         font-family: var(--font-sans);
         font-size: 11px;
-        font-weight: 600;
+        font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         border: 1px solid var(--border-color);
         cursor: pointer;
         user-select: none;
+        transition: 0.1s;
     }
-    .tab.plugin-name { background: var(--tag-yellow); border-right: none; }
-    .tab.active { background: var(--panel-bg); border-right: none; }
-    .tab.inactive { background: var(--panel-dark); color: var(--text-inverse); }
-    .tab.inactive:last-child { border-left: 1px solid #333; }
-
-    .breadcrumb-row { display: flex; align-items: stretch; margin-top: 4px; height: 24px; }
-    .bc-label { background: var(--panel-bg); padding: 0 10px; font-size: 11px; font-weight: 500; display: flex; align-items: center; border: 1px solid var(--border-color); border-right: none; }
-    .bc-arrow { width: 20px; background: var(--panel-bg); border: 1px solid var(--border-color); border-left: none; position: relative; display: flex; align-items: center; justify-content: center; }
-    .bc-arrow::after { content: ''; width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 5px solid var(--border-color); margin-right: -4px; }
-    .bc-value { background: var(--panel-bg); padding: 0 12px; font-family: var(--font-mono); font-size: 10px; font-weight: 700; display: flex; align-items: center; border: 1px solid var(--border-color); margin-left: 4px; text-transform: uppercase; }
+    .tab.active { background: var(--panel-dark); color: var(--text-inverse); border-color: var(--panel-dark); position: relative; z-index: 2; }
+    .tab.inactive { background: var(--panel-bg); color: var(--panel-dark); margin-left: -1px; }
+    .tab.inactive:hover { background: #f5f5f5; }
 
     /* ── Modal Window ── */
     .modal-window {
         background: var(--panel-bg);
         border: 1px solid var(--border-color);
-        box-shadow: 0 12px 24px rgba(0,0,0,0.15);
         display: flex;
         flex-direction: column;
-        max-height: calc(100vh - 160px);
+        width: 100%;
+        margin-bottom: 20px;
     }
 
     .window-header {
         border-bottom: 1px solid var(--border-color);
-        padding: 8px 12px;
+        padding: 10px 12px;
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-end;
         align-items: center;
         background: var(--panel-bg);
     }
-    .window-title { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: -0.5px; }
     .window-controls { display: flex; gap: 6px; }
     .control-dot { width: 8px; height: 8px; border: 1px solid var(--border-color); }
     .control-dot.close { background: var(--tag-red); }
@@ -107,11 +132,10 @@
     .control-dot.max { background: var(--tag-green); }
 
     .window-body {
-        padding: 24px;
+        padding: 20px;
         display: flex;
         flex-direction: column;
         gap: 20px;
-        overflow-y: auto;
     }
 
     /* ── Panels ── */
@@ -139,24 +163,31 @@
     .upload-zone::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
     .upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
 
-    .upload-icon { font-family: var(--font-mono); font-size: 24px; margin-bottom: 12px; font-weight: 400; }
+    .upload-icon { font-family: var(--font-mono); font-size: 24px; margin-bottom: 12px; }
     .upload-title { font-family: var(--font-sans); font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-    .upload-meta { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); }
+    .upload-meta { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); font-weight: 700; }
 
-    /* ── Tables ── */
+    /* ── Results Table ── */
     .process-list { display: flex; flex-direction: column; border: 1px solid var(--border-color); border-bottom: none; }
     .process-header {
         display: grid; grid-template-columns: 2fr 1fr 1fr;
-        padding: 6px 12px; border-bottom: 1px solid var(--border-color);
+        padding: 8px 12px; border-bottom: 1px solid var(--border-color);
         background: var(--panel-dark); color: var(--text-inverse);
-        font-family: var(--font-mono); font-size: 9px; text-transform: uppercase;
+        font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; font-weight: 700;
     }
-    .process-row { display: grid; grid-template-columns: 2fr 1fr 1fr; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--border-color); font-size: 11px; }
-    .process-row:nth-child(even) { background: rgba(0,0,0,0.02); }
     
-    .col-name { font-family: var(--font-sans); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .col-size { font-family: var(--font-mono); color: var(--text-muted); font-size: 10px; }
-    .col-status { display: flex; justify-content: flex-end; }
+    .result-row { border-bottom: 1px solid var(--border-color); }
+    .result-row summary {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; align-items: center;
+        padding: 10px 12px; font-size: 11px; cursor: pointer; list-style: none;
+    }
+    .result-row summary::-webkit-details-marker { display: none; }
+    .result-row summary:hover { background: rgba(0,0,0,0.02); }
+    
+    .col-name { font-family: var(--font-sans); font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .col-size { font-family: var(--font-mono); color: var(--text-muted); font-size: 10px; font-weight: 700; }
+    .col-status { display: flex; justify-content: flex-end; align-items: center; gap: 6px; }
+    .dropdown-arrow { font-size: 8px; opacity: 0.5; }
     
     .status-tag { font-family: var(--font-mono); font-size: 9px; font-weight: 700; padding: 2px 6px; text-transform: uppercase; color: var(--text-inverse); }
     .tag-blue { background: var(--tag-blue); }
@@ -164,55 +195,67 @@
     .tag-red { background: var(--tag-red); }
     .tag-black { background: var(--tag-black); }
 
-    /* ── Progress ── */
-    .progress-section { margin-top: 8px; }
-    .progress-track { width: 100%; height: 6px; border: 1px solid var(--border-color); position: relative; margin: 4px 0; }
-    .progress-fill { height: 100%; background: var(--panel-dark); transition: width 0.3s ease; }
+    .err-content {
+        padding: 12px; background: #fffcfc; font-family: var(--font-mono);
+        font-size: 9px; color: var(--tag-red); border-top: 1px dashed var(--border-color);
+        white-space: pre-wrap; word-break: break-all; font-weight: 700;
+    }
 
     /* ── Footer ── */
-    .window-footer { border-top: 1px solid var(--border-color); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; background: var(--panel-bg); }
-    .system-status { font-family: var(--font-mono); font-size: 10px; display: flex; align-items: center; gap: 6px; }
-    .status-indicator { width: 6px; height: 6px; background: var(--tag-blue); border-radius: 50%; }
-    .status-indicator.pulse { animation: pulse 2s infinite; }
-    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+    .window-footer { border-top: 1px solid var(--border-color); padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; background: var(--panel-bg); }
+    .footer-top { display: flex; justify-content: space-between; align-items: center; }
+    .footer-links { display: flex; gap: 12px; }
+    .footer-link { font-family: var(--font-mono); font-size: 9px; font-weight: 700; color: var(--panel-dark); text-decoration: underline; text-transform: uppercase; cursor: pointer; }
+    .v-stable { font-family: var(--font-mono); font-size: 9px; font-weight: 700; color: var(--text-muted); }
+    
+    .copyright-row { font-family: var(--font-mono); font-size: 8px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8; }
 
     /* ── Buttons ── */
-    .btn-row { display: flex; gap: 8px; }
+    .btn-row { display: flex; gap: 8px; width: 100%; }
     button {
-        font-family: var(--font-sans); font-size: 11px; font-weight: 700; text-transform: uppercase;
-        padding: 8px 16px; border: 1px solid var(--border-color); cursor: pointer; transition: 0.1s;
+        font-family: var(--font-sans); font-size: 11px; font-weight: 800; text-transform: uppercase;
+        padding: 10px 16px; border: 1px solid var(--border-color); cursor: pointer; transition: 0.1s;
     }
-    button.primary { background: var(--panel-dark); color: var(--text-inverse); width: 100%; }
-    button.primary:hover { transform: translate(-2px, -2px); box-shadow: 2px 2px 0 #000; }
+    button.primary { background: var(--panel-dark); color: var(--text-inverse); width: 100%; box-shadow: 2px 2px 0 rgba(0,0,0,0.1); }
+    button.primary:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 rgba(0,0,0,1); }
     button.primary:active { transform: translate(0,0); box-shadow: none; }
     button.secondary { background: var(--panel-bg); color: var(--text-main); }
-    button:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
 
-    /* ── Scrollbars ── */
-    .window-body::-webkit-scrollbar { width: 6px; }
-    .window-body::-webkit-scrollbar-track { background: var(--panel-bg); border-left: 1px solid var(--border-color); }
-    .window-body::-webkit-scrollbar-thumb { background: var(--panel-dark); }
+    /* ── Parsing Error ── */
+    #parse-error {
+        border: 1px solid var(--tag-red); background: #fff5f5;
+        padding: 12px; color: var(--tag-red); font-family: var(--font-mono);
+        font-size: 10px; font-weight: 700; white-space: pre-wrap; word-break: break-all;
+    }
 </style>
 </head>
 <body>
 
+<div id="contact-overlay">
+    <div style="font-family:var(--font-sans); font-size:24px; font-weight:800; text-transform:uppercase; letter-spacing:-1px;">CONTACT_SYSTEM</div>
+    <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-start;">
+        <div style="font-family:var(--font-mono); font-size:14px; font-weight:700; color:var(--text-muted);">EMAIL_ADDRESS:</div>
+        <div id="email-text" style="font-family:var(--font-mono); font-size:14px; font-weight:700;">s4.shanmugsundar@gmail.com</div>
+    </div>
+    <div class="btn-row">
+        <button class="primary" onclick="copyEmail()">Copy Email</button>
+        <button class="secondary" onclick="toggleContact(false)">Go Back</button>
+    </div>
+    <div id="copy-success" style="font-family:var(--font-mono); font-size:10px; font-weight:700; color:var(--tag-green); visibility:hidden;">ADDRESS_COPIED_TO_CLIPBOARD</div>
+</div>
+
 <div class="system-environment">
-    <div class="nav-cluster">
+    <div class="app-header">
+        <h1 class="main-title">TOKEN COLLECTIONS IMPORTER</h1>
         <div class="tabs-row">
-            <div class="tab plugin-name">TOKEN_PORTER</div>
             <div id="tab-import" class="tab active" onclick="switchTab('import')">IMPORT</div>
             <div id="tab-export" class="tab inactive" onclick="switchTab('export')">EXPORT</div>
-        </div>
-        <div class="breadcrumb-row">
-            <div class="bc-label">Path</div>
-            <div class="bc-arrow"></div>
-            <div id="bc-path" class="bc-value">ROOT/QUEUE</div>
         </div>
     </div>
 
     <div class="modal-window">
         <div class="window-header">
-            <div class="window-title">INGESTION_MODULE_V2.5</div>
             <div class="window-controls">
                 <div class="control-dot min"></div>
                 <div class="control-dot max"></div>
@@ -226,24 +269,26 @@
                 <div id="drop-zone" class="upload-zone">
                     <input type="file" accept=".zip,.json" id="file-input" onchange="handleFile(this.files[0])">
                     <div class="upload-icon">[+]</div>
-                    <div class="upload-title">Drop Archive</div>
-                    <div class="upload-meta">ACCEPTED: .ZIP, .JSON</div>
+                    <div class="upload-title">Drop Tokens</div>
+                    <div class="upload-meta">ZIP / JSON ONLY</div>
                 </div>
 
-                <div id="file-chosen" style="display:none; align-items:center; justify-content:space-between; border:1px solid #000; padding:8px 12px; background:var(--tag-yellow);">
-                    <span id="file-name" style="font-family:var(--font-mono); font-size:10px; font-weight:700;"></span>
+                <div id="file-chosen" style="display:none; align-items:center; justify-content:space-between; border:1px solid #000; padding:10px; background:var(--tag-yellow);">
+                    <span id="file-name" style="font-family:var(--font-mono); font-size:10px; font-weight:800; overflow:hidden; text-overflow:ellipsis;"></span>
                     <button class="secondary" onclick="clearFile()" style="padding:2px 6px; font-size:9px;">✕</button>
                 </div>
 
                 <div id="progress" style="display:none; flex-direction:column; gap:8px;">
-                    <div class="progress-track"><div class="progress-fill" style="width: 50%;"></div></div>
-                    <div id="progress-text" style="font-family:var(--font-mono); font-size:9px; text-transform:uppercase;">Analyzing...</div>
+                    <div style="font-family:var(--font-mono); font-size:9px; font-weight:700; text-transform:uppercase;">Status: Processing...</div>
+                    <div style="width:100%; height:8px; border:1px solid #000; background:#eee;">
+                        <div id="import-bar" style="height:100%; background:#000; width:0%; transition:0.3s;"></div>
+                    </div>
                 </div>
 
                 <div id="conflict-area" style="display:none; flex-direction:column; gap:12px;">
-                    <div style="border:1px solid #000; background:var(--tag-yellow); padding:8px 12px; font-size:11px;">
-                        <div style="font-weight:700; margin-bottom:4px;">CONFLICTS DETECTED</div>
-                        <div id="conflict-list" style="font-size:10px;"></div>
+                    <div style="border:1px solid #000; background:var(--tag-yellow); padding:10px;">
+                        <div style="font-weight:800; font-size:11px; margin-bottom:4px;">CONFLICTS_DETECTED</div>
+                        <div id="conflict-list" style="font-family:var(--font-mono); font-size:9px; font-weight:700;"></div>
                     </div>
                     <div class="btn-row">
                         <button class="primary" onclick="doImport('UPDATE')">Merge Update</button>
@@ -258,19 +303,15 @@
                 <div id="results" style="display:none;">
                     <div class="process-list">
                         <div class="process-header">
-                            <div>Collection</div>
-                            <div>Tokens</div>
+                            <div>Target</div>
+                            <div>Payload</div>
                             <div style="text-align:right;">State</div>
                         </div>
                         <div id="result-list"></div>
                     </div>
-                    <div id="alias-errors" style="display:none; margin-top:12px; border:1px solid #000; background:rgba(255,69,58,0.1); padding:8px 12px;">
-                        <div style="color:var(--tag-red); font-size:9px; font-weight:700;">ALIAS_MAPPING_FAILURES:</div>
-                        <pre id="alias-list" style="font-size:9px; font-family:var(--font-mono); margin-top:4px; max-height:80px; overflow-y:auto;"></pre>
-                    </div>
                 </div>
                 
-                <div id="parse-error" style="display:none; border:1px solid var(--tag-red); background:rgba(255,69,58,0.1); padding:8px 12px; color:var(--tag-red); font-size:11px; font-weight:700; font-family:var(--font-mono);"></div>
+                <div id="parse-error" style="display:none;"></div>
             </div>
 
             <!-- EXPORT PANEL -->
@@ -278,25 +319,26 @@
                 <div class="process-list" id="export-list-container">
                     <div class="process-header">
                         <div>Local Node</div>
-                        <div>Tokens</div>
+                        <div>Payload</div>
                         <div style="text-align:right;">Status</div>
                     </div>
                     <div id="export-list"></div>
                 </div>
-                <button id="export-btn" class="primary" onclick="doExport()">Generate .ZIP Package</button>
-                <div id="export-progress" style="display:none; flex-direction:column; gap:8px;">
-                    <div class="progress-track"><div class="progress-fill" style="width: 75%;"></div></div>
-                    <div style="font-family:var(--font-mono); font-size:9px; text-transform:uppercase;">Packaging System...</div>
-                </div>
+                <button id="export-btn" class="primary" onclick="doExport()">Generate Archive (.ZIP)</button>
             </div>
         </div>
 
         <div class="window-footer">
-            <div class="system-status">
-                <div id="status-dot" class="status-indicator pulse"></div>
-                <span id="system-status-text">HOST_LINK: ACTIVE</span>
+            <div class="footer-top">
+                <div class="footer-links">
+                    <a href="https://github.com/Shanmus4/figma-variables-tokens-generator" target="_blank" class="footer-link">Docs</a>
+                    <div class="footer-link" onclick="toggleContact(true)">Contact</div>
+                </div>
+                <div class="v-stable">V1.0_STABLE</div>
             </div>
-            <div style="font-family:var(--font-mono); font-size:9px; color:var(--text-muted);">v2.5_STABLE</div>
+            <div class="copyright-row">
+                © 2026 SHANMUGHA SUNDARAM SRINIVASAN. MIT LICENSE.
+            </div>
         </div>
     </div>
 </div>
@@ -304,43 +346,52 @@
 <script>
 let parsedCollections = null;
 
-// TAB NAVIGATION
 function switchTab(tab) {
-    document.querySelectorAll('.tab').forEach(t => {
-        if (!t.classList.contains('plugin-name')) t.className = 'tab inactive';
-    });
+    document.querySelectorAll('.tab').forEach(t => t.className = 'tab inactive');
     document.getElementById(`tab-${tab}`).className = 'tab active';
     document.querySelectorAll('.panel').forEach(p => p.className = 'panel');
     document.getElementById(`panel-${tab}`).className = 'panel active';
-    document.getElementById('bc-path').innerText = `ROOT/${tab.toUpperCase()}`;
-    if (tab === 'export') parent.postMessage({ pluginMessage: { type: 'GET_COLLECTIONS' } }, '*');
+    if (tab === 'export') {
+        document.getElementById('export-list').innerHTML = '<div style="padding:20px; font-size:10px; text-align:center; font-family:var(--font-mono); font-weight:700;">READING_DATA...</div>';
+        parent.postMessage({ pluginMessage: { type: 'GET_COLLECTIONS' } }, '*');
+    }
 }
 
-// DRAG & DROP VISUAL FEEDBACK
+function toggleContact(show) {
+    const overlay = document.getElementById('contact-overlay');
+    overlay.className = show ? 'active' : '';
+    document.getElementById('copy-success').style.visibility = 'hidden';
+}
+
+function copyEmail() {
+    const email = "s4.shanmugsundar@gmail.com";
+    const el = document.createElement('textarea');
+    el.value = email;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    document.getElementById('copy-success').style.visibility = 'visible';
+}
+
 const dropZone = document.getElementById('drop-zone');
-['dragenter', 'dragover'].forEach(e => {
-    dropZone.addEventListener(e, (ev) => {
-        ev.preventDefault();
-        dropZone.classList.add('drag-over');
-    });
-});
-['dragleave', 'drop'].forEach(e => {
-    dropZone.addEventListener(e, (ev) => {
-        dropZone.classList.remove('drag-over');
-    });
+['dragenter', 'dragover'].forEach(e => dropZone.addEventListener(e, (ev) => { ev.preventDefault(); dropZone.classList.add('drag-over'); }));
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', (ev) => {
+    ev.preventDefault();
+    dropZone.classList.remove('drag-over');
+    if (ev.dataTransfer.files && ev.dataTransfer.files[0]) {
+        handleFile(ev.dataTransfer.files[0]);
+    }
 });
 
-// FILE PROCESSING
 async function handleFile(file) {
     if (!file) return;
-    console.log("[Importer] Analyzing:", file.name);
     resetUI();
     document.getElementById('progress').style.display = 'flex';
-    document.getElementById('system-status-text').innerText = 'STATUS: PARSING_TARGET';
-    
+    document.getElementById('import-bar').style.width = '30%';
     try {
-        if (typeof JSZip === 'undefined') throw new Error("JSZip not detected");
-        
+        if (typeof JSZip === 'undefined') throw new Error("JSZip_NOT_LOADED");
         let collections = [];
         if (file.name.endsWith('.json')) {
             const tokens = flattenTokens(JSON.parse(await file.text()));
@@ -363,25 +414,16 @@ async function handleFile(file) {
                     const content = await f.entry.async('string');
                     modes.push({ modeName: f.name.replace('.tokens.json', '').replace('.json', ''), tokens: flattenTokens(JSON.parse(content)) });
                 }
-                if (modes.length > 0) {
-                    const counts = modes.map(m => Object.keys(m.tokens).length);
-                    collections.push({ name: folder.replace(/^\d+\.\s*/, ''), modes, tokenCount: Math.max(...counts) });
-                }
+                if (modes.length > 0) collections.push({ name: folder.replace(/^\d+\.\s*/, ''), modes, tokenCount: Math.max(...modes.map(m => Object.keys(m.tokens).length)) });
             }
         }
-        
-        if (collections.length === 0) throw new Error("No collections found");
+        if (collections.length === 0) throw new Error("NO_VALID_DATA");
         parsedCollections = collections;
-        document.getElementById('file-name').innerText = file.name;
+        document.getElementById('file-name').innerText = file.name.toUpperCase();
         document.getElementById('file-chosen').style.display = 'flex';
         document.getElementById('drop-zone').style.display = 'none';
         parent.postMessage({ pluginMessage: { type: 'CHECK_CONFLICTS', collections } }, '*');
-    } catch (e) {
-        showError(e.message);
-    } finally {
-        document.getElementById('progress').style.display = 'none';
-        document.getElementById('system-status-text').innerText = 'HOST_LINK: ACTIVE';
-    }
+    } catch (e) { showError(e.message); } finally { document.getElementById('progress').style.display = 'none'; }
 }
 
 function resetUI() {
@@ -393,11 +435,7 @@ function resetUI() {
     document.getElementById('file-chosen').style.display = 'none';
 }
 
-function clearFile() {
-    parsedCollections = null;
-    resetUI();
-}
-
+function clearFile() { parsedCollections = null; resetUI(); }
 function showError(msg) {
     const e = document.getElementById('parse-error');
     e.innerText = "ERROR: " + msg.toUpperCase();
@@ -405,8 +443,9 @@ function showError(msg) {
 }
 
 function doImport(strategy) {
+    document.getElementById('conflict-area').style.display = 'none';
     document.getElementById('progress').style.display = 'flex';
-    document.getElementById('system-status-text').innerText = 'STATUS: TRANSMITTING_DATA';
+    document.getElementById('import-bar').style.width = '80%';
     parent.postMessage({ pluginMessage: { type: 'IMPORT', collections: parsedCollections, strategy } }, '*');
 }
 
@@ -418,12 +457,7 @@ function flattenTokens(obj, prefix = '') {
         if (v.$value !== undefined) {
             const ext = v.$extensions || {};
             const ad = ext['com.figma.aliasData'];
-            res[path] = {
-                type: v.$type, value: v.$value,
-                alias: ad ? { targetName: ad.targetVariableName, targetSet: ad.targetVariableSetName } : null,
-                scopes: ext['com.figma.scopes'], codeSyntax: ext['com.figma.codeSyntax'],
-                hidden: ext['com.figma.hiddenFromPublishing']
-            };
+            res[path] = { type: v.$type, value: v.$value, alias: ad ? { targetName: ad.targetVariableName, targetSet: ad.targetVariableSetName } : null };
         } else Object.assign(res, flattenTokens(v, path));
     }
     return res;
@@ -431,45 +465,53 @@ function flattenTokens(obj, prefix = '') {
 
 function doExport() {
     document.getElementById('export-btn').disabled = true;
-    document.getElementById('export-progress').style.display = 'flex';
-    document.getElementById('system-status-text').innerText = 'STATUS: BUNDLING_ARCHIVE';
     parent.postMessage({ pluginMessage: { type: 'EXPORT' } }, '*');
 }
 
 window.onmessage = (e) => {
     const msg = e.data.pluginMessage;
     if (!msg) return;
-
     if (msg.type === 'CONFLICTS_FOUND') {
-        if (msg.conflicts && msg.conflicts.length > 0) {
+        const analysis = msg.analysis;
+        const conflicts = analysis.filter(a => a.status === 'CONFLICT');
+        if (conflicts.length > 0) {
             document.getElementById('conflict-area').style.display = 'flex';
-            document.getElementById('conflict-list').innerText = `EXISTING: ${msg.conflicts.join(', ')}`;
+            document.getElementById('conflict-list').innerHTML = conflicts.map(c => `
+                <div style="margin-bottom:8px; border-bottom:1px solid rgba(0,0,0,0.1); padding-bottom:4px;">
+                    <div style="font-weight:800; text-transform:uppercase; font-size:10px;">${c.name}</div>
+                    <div style="display:flex; gap:8px; font-size:9px; font-weight:700;">
+                        <span style="color:var(--tag-blue)">+${c.newCount} NEW</span>
+                        <span style="color:var(--tag-red)">Δ${c.changedCount} MODS</span>
+                        <span style="color:var(--tag-green)">=${c.sameCount} SAME</span>
+                    </div>
+                </div>
+            `).join('');
         } else {
             document.getElementById('preview-area').style.display = 'block';
         }
     } else if (msg.type === 'IMPORT_COMPLETE') {
-        document.getElementById('progress').style.display = 'none';
-        document.getElementById('preview-area').style.display = 'none';
-        document.getElementById('conflict-area').style.display = 'none';
         const list = document.getElementById('result-list');
-        list.innerHTML = msg.results.map(r => `
-            <div class="process-row">
-                <div class="col-name">${r.name}</div>
-                <div class="col-size">${r.totalCount} VARS</div>
-                <div class="col-status">
-                    <span class="status-tag ${r.errors.length ? 'tag-red' : 'tag-green'}">${r.errors.length ? 'FAILURE' : 'SYNCED'}</span>
-                </div>
-            </div>
-        `).join('');
-        if (msg.aliasErrors && msg.aliasErrors.length) {
-            document.getElementById('alias-errors').style.display = 'block';
-            document.getElementById('alias-list').innerText = msg.aliasErrors.join('\n');
-        }
+        list.innerHTML = msg.results.map(r => {
+            const hasErrors = r.errors.length > 0;
+            return `
+            <details class="result-row">
+                <summary>
+                    <div class="col-name">${r.name}</div>
+                    <div class="col-size">${r.successCount}/${r.totalCount}</div>
+                    <div class="col-status">
+                        <span class="status-tag ${hasErrors ? 'tag-red' : 'tag-green'}">${hasErrors ? 'FAILURE' : 'SYNCED'}</span>
+                        ${hasErrors ? '<span class="dropdown-arrow">▼</span>' : ''}
+                    </div>
+                </summary>
+                ${hasErrors ? `<div class="err-content">${r.errors.join('\n')}</div>` : ''}
+            </details>
+        `}).join('');
+        document.getElementById('progress').style.display = 'none';
+        document.getElementById('import-bar').style.width = '0%';
         document.getElementById('results').style.display = 'block';
-        document.getElementById('system-status-text').innerText = 'STATUS: SYNC_COMPLETE';
     } else if (msg.type === 'COLLECTIONS_LIST') {
         document.getElementById('export-list').innerHTML = msg.collections.map(c => `
-            <div class="process-row">
+            <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; padding:12px 14px; border-bottom:1px solid #000; font-size:11px;">
                 <div class="col-name">${c.name}</div>
                 <div class="col-size">${c.tokenCount} VARS</div>
                 <div class="col-status"><span class="status-tag tag-blue">LOCAL</span></div>
@@ -479,10 +521,8 @@ window.onmessage = (e) => {
         buildZip(msg.exportData);
     } else if (msg.type === 'IMPORT_ERROR' || msg.type === 'EXPORT_ERROR') {
         document.getElementById('progress').style.display = 'none';
-        document.getElementById('export-progress').style.display = 'none';
         document.getElementById('export-btn').disabled = false;
         showError(msg.message);
-        document.getElementById('system-status-text').innerText = 'STATUS: ERROR_ENCOUNTERED';
     }
 };
 
@@ -492,9 +532,7 @@ async function buildZip(data) {
     const blob = await zip.generateAsync({ type: 'blob' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob); a.download = 'tokens-export.zip'; a.click();
-    document.getElementById('export-progress').style.display = 'none';
     document.getElementById('export-btn').disabled = false;
-    document.getElementById('system-status-text').innerText = 'STATUS: EXPORT_COMPLETE';
 }
 </script>
 </body>

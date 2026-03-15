@@ -29,10 +29,50 @@ figma.ui.onmessage = async (msg) => {
 
 async function checkConflicts(collections) {
   const localCollections = figma.variables.getLocalVariableCollections()
-  const localNames = localCollections.map(c => c.name)
-  const conflicts = collections.filter(c => localNames.includes(c.name)).map(c => c.name)
+  const localVars = figma.variables.getLocalVariables()
   
-  figma.ui.postMessage({ type: 'CONFLICTS_FOUND', conflicts })
+  const analysis = collections.map(collData => {
+    const existing = localCollections.find(c => c.name === collData.name)
+    if (!existing) {
+      return { name: collData.name, status: 'NEW', newCount: collData.tokenCount, changedCount: 0, sameCount: 0 }
+    }
+    
+    let newCount = 0, changedCount = 0, sameCount = 0
+    const existingVars = localVars.filter(v => v.variableCollectionId === existing.id)
+    const incomingTokens = collData.modes[0].tokens
+    const modeId = existing.modes[0].modeId
+
+    for (const [path, token] of Object.entries(incomingTokens)) {
+      const local = existingVars.find(v => v.name === path)
+      if (!local) {
+        newCount++
+      } else {
+        const localValue = local.valuesByMode[modeId]
+        const incomingValue = toFigmaValue(token.type, token.value)
+        
+        if (isBetterEqual(localValue, incomingValue, local.resolvedType)) {
+          sameCount++
+        } else {
+          changedCount++
+        }
+      }
+    }
+    
+    return { name: collData.name, status: 'CONFLICT', newCount, changedCount, sameCount }
+  })
+  
+  figma.ui.postMessage({ type: 'CONFLICTS_FOUND', analysis })
+}
+
+function isBetterEqual(a, b, type) {
+  if (type === 'COLOR') {
+    if (!a || !b) return a === b
+    return Math.abs(a.r - b.r) < 0.005 && 
+           Math.abs(a.g - b.g) < 0.005 && 
+           Math.abs(a.b - b.b) < 0.005 && 
+           Math.abs((a.a||1) - (b.a||1)) < 0.01
+  }
+  return a === b
 }
 
 // ─── IMPORT ───────────────────────────────────────────────────────────────────
