@@ -44,10 +44,11 @@ To prevent context pollution, read only the files required for your current load
 | 7 | `references/03-json-format.md` | Exact W3C JSON structure |
 | 8 | `references/04-primitives.md` | Raw hex/spacing/font data |
 | 9 | `references/06-generator-utility.md` | Python generation script patterns |
+| 10 | `scripts/generator_core.py` | Executable Python engine (for local/IDE environments) |
 
 ### Load Stage 4: Delivery & Handoff (Read after ZIP delivery and token count reporting are complete)
 | # | File | Purpose |
 |---|------|---------|
-| 10| `instructions/03-import-and-handoff.md` | Import guide & ZIP reference table |
+| 11| `instructions/03-import-and-handoff.md` | Import guide & ZIP reference table |
 
 > Do not read Load Stage 3 implementation files (scoping rules, JSON format, generator utility) until the interview is 100% complete. Reading them early fills context with technical data that is not needed yet.

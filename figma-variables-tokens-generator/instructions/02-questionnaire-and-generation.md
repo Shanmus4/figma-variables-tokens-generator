@@ -266,6 +266,52 @@ Follow this exact 3-step pattern for every generation turn. Do NOT deviate:
 
 **Output constraint:** Output only valid `.zip` files containing the structured JSON. Do not output `.skill` files or dump raw scripts — this confuses users who expect ready-to-import ZIPs and risks context truncation.
 
+### Local Environment Output (IDE / CLI / Desktop Apps)
+
+If you have **local filesystem access** (running in an IDE, CLI, terminal-based tool, or desktop AI app), use the disk-based output workflow instead of a download widget:
+
+**1. Project Setup (first run only):**
+Create this folder structure in the user's current working directory:
+```
+figma-variables-generator/
+├── scripts/
+│   ├── generator_core.py    ← Write once from scripts/generator_core.py
+│   └── gen_all.py            ← Your brand-specific generation script
+└── export/
+    └── (ZIPs appear here)
+```
+
+Run these commands:
+```bash
+mkdir -p figma-variables-generator/scripts figma-variables-generator/export
+```
+
+**2. Write `generator_core.py` (first run only):**
+Write the contents of `scripts/generator_core.py` (from this skill) to `figma-variables-generator/scripts/generator_core.py`. If it already exists from a previous run, **skip this step**.
+
+**3. Write `gen_all.py` (every run):**
+Write your brand-specific generation script to `figma-variables-generator/scripts/gen_all.py`. This script should:
+- Import from `generator_core`: `from generator_core import DesignTokenGenerator, prebuild_ids, make_family`
+- Follow the same Data Blueprint Workflow (brand_data dict → create_token loops → save_mode)
+- End with `gen.build_zip(output_dir="../export")` to write the ZIP to the export folder
+- The `build_zip()` method auto-numbers if a ZIP already exists (e.g. `design-tokens (1).zip`)
+
+**4. Execute:**
+```bash
+cd figma-variables-generator/scripts && python gen_all.py
+```
+
+**5. Inform the user:**
+After execution, tell the user the exact path where the ZIP was saved. Example:
+> "Your design tokens ZIP has been saved to `figma-variables-generator/export/design-tokens.zip`. You can import this into Figma using the Token Collections Importer plugin."
+
+**6. Modifications:**
+If the user requests changes (e.g. "change the blue palette"), modify only `gen_all.py` and re-run. A new auto-numbered ZIP will appear in `export/`. Do NOT rewrite `generator_core.py` — it never changes.
+
+> **Phased generation in local mode:** For Turn A/B/C, write a single `gen_all.py` that includes all phases. Use `pickle.dump(gen.to_dict(), f)` between turns only if context limits require splitting across separate conversations. Within the same conversation, keep everything in one script.
+
+> **Browser environments:** If you are running in a browser-based sandbox (no filesystem access), ignore this section entirely. Use the standard download widget approach.
+
 > **Critical performance rule for Path 2:** Do NOT attempt to write one giant script or generate all JSON in a single turn. Break the generation across multiple turns as instructed below. Wait for the user to reply "Next" before proceeding.
 
 > **Consolidated ZIP rule**: Do NOT output a ZIP widget in Turn A or Turn B. Only the final `design-tokens.zip` widget should be delivered during **TURN C**. Hold the JSON data in memory or session state until the final compilation phase.
