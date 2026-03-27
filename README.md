@@ -25,11 +25,11 @@ Depending on your environment, there are multiple ways to utilize the Figma Vari
 
 | AI Environment | Import & Installation Method |
 |----------------|------------------------------|
-| **Cursor IDE** | Copy the folder to `.cursor/skills/figma-tokens/` in your workspace, or simply attach the folder context manually in chat using `@Folder`. |
-| **Claude Code (CLI)** | Extract the folder into `.claude/skills/figma-tokens/` within your project. Claude Code will automatically detect and read the skill instructions. |
-| **Windsurf** | Extract the folder to your workspace. Reference it in your `.windsurf/rules/rules.md` file, or attach the folder directly to Cascade. |
-| **VS Code (Copilot / Cline)** | Extract the folder into your workspace. Tell Copilot to read the files via `@workspace` instructions, or allow Cline to read the folder contents. |
-| **Claude.ai / ChatGPT (Browser)** | Create a "Project" (Claude) or "Custom GPT" (ChatGPT) and upload the Markdown files as core system knowledge. |
+| **Cursor IDE** | Download and unzip `figma-variables-tokens-generator.zip` from the Releases tab. Copy the folder to `.cursor/skills/figma-tokens/` in your workspace, or simply attach the folder context manually in chat using `@Folder`. |
+| **Claude Code (CLI)** | Download and unzip `figma-variables-tokens-generator.zip` from the Releases tab. Extract the folder into `.claude/skills/figma-tokens/` within your project. Claude Code will automatically detect and read the skill instructions. |
+| **Windsurf** | Download and unzip `figma-variables-tokens-generator.zip` from the Releases tab. Extract the folder to your workspace. Reference it in your `.windsurf/rules/rules.md` file, or attach the folder directly to Cascade. |
+| **VS Code (Copilot / Cline)** | Download and unzip `figma-variables-tokens-generator.zip` from the Releases tab. Extract the folder into your workspace. Tell Copilot to read the files via `@workspace` instructions, or allow Cline to read the folder contents. |
+| **Claude.ai / Claude Desktop** | Download `figma-variables-tokens-generator.zip` from the Releases tab. Go to **Connectors -> Skills** in Claude, and upload the ZIP file directly. |
 | **Manual (One-Click ZIP)** | Go to the **Releases** tab on the right side of this GitHub repository page and download `figma-variables-tokens-generator.zip`. |
 
 ---
