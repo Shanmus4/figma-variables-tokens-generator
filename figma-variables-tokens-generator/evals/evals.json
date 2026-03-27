@@ -45,7 +45,7 @@
         },
         {
           "name": "architecture-question-still-asked",
-          "description": "Q7 (layer architecture) is asked via dropdown even though the context implies mobile — not auto-decided"
+          "description": "Q7 (Tier architecture) is asked via dropdown even though the context implies mobile — not auto-decided"
         },
         {
           "name": "zip-delivered-not-raw-json",

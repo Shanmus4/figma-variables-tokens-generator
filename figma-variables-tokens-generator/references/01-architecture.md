@@ -29,8 +29,8 @@ Semantic: surface/primary          FRAME_FILL+SHAPE_FILL, aliases Theme
         ↓
 Component Colors: color/button/primary/default/background
                                    FRAME_FILL+SHAPE_FILL
-                                   Aliases Semantic (4-layer) 
-                                   OR Theme (2/3-layer) ← picker tip
+                                   Aliases Semantic (4-Tier) 
+                                   OR Theme (2/3-Tier) ← picker tip
 
 ── TYPOGRAPHY CHAIN (Triple Alias Rule) ──────────────────
 1. Numerical (fontSize, lineHeight, letterSpacing):
@@ -128,13 +128,13 @@ Component Dimensions has NO modes. Breakpoint and density switching is controlle
 |---|---|---|---|
 | 1 | Primitives | nothing | Always first |
 | 2 | Theme | Primitives | Colour chains start here |
-| 3 | Semantic | Theme | 4-layer only. Aliases Theme only — import immediately after Theme |
+| 3 | Semantic | Theme | 4-Tier only. Aliases Theme only — import immediately after Theme |
 | 4 | Responsive | Primitives | Must exist before Typography + Component Dimensions |
 | 5 | Density | Primitives | Must exist before Component Dimensions |
 | 6 | Layout | nothing | Independent |
 | 7 | Effects | Primitives + Theme | Colours alias Theme, geometry aliases Primitives |
 | 8 | Typography | Primitives + Theme + Responsive | Font numbers from Responsive, colours from Theme |
-| 9 | Component Colors | Semantic (4-layer) or Theme (2/3-layer) | Colour tip |
+| 9 | Component Colors | Semantic (4-Tier) or Theme (2/3-Tier) | Colour tip |
 | 10 | Component Dimensions | Density + Responsive | Dimension tip |
 
 > Semantic is now position 3 — it only aliases Theme, so it belongs immediately after Theme.
@@ -165,25 +165,25 @@ The `$metadata.modeName` field inside each file must match the file name (withou
 
 ## Scoping Instructions for User (End of Generation)
 
-Tell the user which collections to **turn off scoping** on (hide from variable pickers) based on their layer choice and whether optional collections act purely as alias parents. 
+Tell the user which collections to **turn off scoping** on (hide from variable pickers) based on their Tier choice and whether optional collections act purely as alias parents. 
 
 **CRITICAL FIGMA BUG:** "No scope" variables in JSON default to "all scopes" upon import. Users must manually turn off scoping (select all variables → remove all scopes) for intermediate parent collections.
 
 The general rule: **only TIP collections should appear in pickers.** Hide intermediate collections.
 
-| Layer | Hide from picker | Keep visible (tips) |
+| Tier | Hide from picker | Keep visible (tips) |
 |---|---|---|
-| 1-layer | Nothing | Primitives |
-| 2-layer | Primitives, Responsive*, Density* | Theme, Typography, Layout, Effects, Component Dimensions* |
-| 3-layer | Primitives, Theme (suggested), Responsive*, Density* | Component Colors, Component Dimensions, Typography, Layout, Effects |
-| 4-layer | Primitives, Theme (suggested), Semantic (suggested), Responsive*, Density* | Component Colors, Component Dimensions, Typography, Layout, Effects |
+| 1-Tier | Nothing | Primitives |
+| 2-Tier | Primitives, Responsive*, Density* | Theme, Typography, Layout, Effects, Component Dimensions* |
+| 3-Tier | Primitives, Theme (suggested), Responsive*, Density* | Component Colors, Component Dimensions, Typography, Layout, Effects |
+| 4-Tier | Primitives, Theme (suggested), Semantic (suggested), Responsive*, Density* | Component Colors, Component Dimensions, Typography, Layout, Effects |
 
 *\*If generated.*
 
 **Key notes:**
-- 1-layer: Primitives is the only collection. Never turn it off here.
-- 2-layer: Theme IS the colour tip (no Component Colors). Only hide Primitives (and structural parents).
-- 3/4-layer: Hiding Theme and Semantic are suggestions only — tell user to verify and keep scoping ON if they apply those tokens directly to layers instead of going through Component Colors.
+- 1-Tier: Primitives is the only collection. Never turn it off here.
+- 2-Tier: Theme IS the colour tip (no Component Colors). Only hide Primitives (and structural parents).
+- 3/4-Tier: Hiding Theme and Semantic are suggestions only — tell user to verify and keep scoping ON if they apply those tokens directly to Tiers instead of going through Component Colors.
 - "Hide from publishing" (library sharing) is different from picker visibility (scope control per variable). Both should be set correctly — the JSON already handles Primitives `hiddenFromPublishing: true` naturally.
 
 ## Collection Names — No Brand Prefix Ever

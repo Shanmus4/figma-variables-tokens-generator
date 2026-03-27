@@ -103,7 +103,7 @@ Wait for the response. Then:
 
 **⛔ STOP HERE.** Send this message and wait for the user's response. Do NOT include Turn 3 in this same message.
 
-*After receiving token data (from Turn 1 or Turn 2):* Deeply analyse the output. Identify the exact layer architecture (1/2/3/4), existing colour palette (primary/secondary hexes), active themes (light, dark, both), spacing scale, font stack, naming conventions (e.g. role-based, component-first), and code syntax. 
+*After receiving token data (from Turn 1 or Turn 2):* Deeply analyse the output. Identify the exact Tier architecture (1/2/3/4), existing colour palette (primary/secondary hexes), active themes (light, dark, both), spacing scale, font stack, naming conventions (e.g. role-based, component-first), and code syntax. 
 **CRITICAL:** You will use this analysis to intelligently adapt (NOT skip) all subsequent questions in Phase 1. You MUST still ask every question — but modify the dropdown choices to include "Keep existing" options alongside expansion options. Never skip a question just because you can infer the answer.
 
 ---

@@ -130,7 +130,7 @@ class DesignTokenGenerator:
                     "in Primitives registry. Add it before aliasing.")
             elif not target_vid and target_registry is not None:
                 raise KeyError(
-                    f"CROSS-LAYER GAP: Target '{target_path}' not found "
+                    f"CROSS-TIER GAP: Target '{target_path}' not found "
                     f"in {alias_set} registry. This will break the import.")
 
             ext["com.figma.aliasData"] = {

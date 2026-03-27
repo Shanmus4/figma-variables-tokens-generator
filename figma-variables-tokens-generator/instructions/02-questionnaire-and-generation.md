@@ -6,8 +6,8 @@
 > - **Never skip a question.** Every question in Turns 4–9 must still be asked, even if you can infer the answer. The user must always have the chance to confirm or change.
 > - **Contextualize the question:** Tell the user what you found. (e.g., *"I see your current system only has a Light mode."* or *"I see these tokens came from a Web project."*)
 > - **Inject dynamic choices (LITERAL STRINGS):** Modify your dropdown choices to include keeping their existing setup versus expanding/changing it. Use the format: `Keep existing: [Feature Name] (e.g. [Full Token Example])`. Never shorten or summarize the examples — the full example is the pattern being demonstrated. (e.g. `Keep existing: camelCase (colorButtonPrimary)`).
-> - **Architectural Dependencies:** Some questions depend on previous choices. (e.g., If the user chose a **2-layer architecture** in Q7, do **NOT** offer `Component-first` naming in Q18, as 2-layer systems do not have a dedicated component layer).
-> - Apply this intelligence to Product Type (Q2), Colours (Q3–Q6), Layer Architecture (Q7), Code Syntax (Q17), and Token naming (Q18). Adapt the dropdown OPTIONS based on what you learned — but still present the dropdown and wait for the user's selection.
+> - **Architectural Dependencies:** Some questions depend on previous choices. (e.g., If the user chose a **2-Tier architecture** in Q7, do **NOT** offer `Component-first` naming in Q18, as 2-Tier systems do not have a dedicated component Tier).
+> - Apply this intelligence to Product Type (Q2), Colours (Q3–Q6), Tier Architecture (Q7), Code Syntax (Q17), and Variable path structure (Q18). Adapt the dropdown OPTIONS based on what you learned — but still present the dropdown and wait for the user's selection.
 - **Platform Mapping (Q2 Logic)**: Map the selection to `platforms` list: `Web` or `Desktop` -> `["WEB"]`; `Mobile` -> `["ANDROID", "iOS"]`; `Web + Mobile` -> `["WEB", "ANDROID", "iOS"]`.
 
 
@@ -55,13 +55,13 @@ After the brand and context are resolved, show these four dropdowns together:
 - `Both light and dark (e.g. Adaptive system with full theme support)`
 - `Custom (including High Contrast / accessibility themes)`
 
-**Q7** *(ask_user_input — single_select)*: "Token layer architecture? [Rec: [Value]]"
-- `1-layer — Primitives + Typography (e.g. Prototypes or minimal systems)`
-- `2-layer — Primitives + Theme + Typography (e.g. Standard scale for most apps)`
-- `3-layer — Primitives + Theme + Component Colors + Typography (e.g. Design-to-Dev parity with component variables)`
-- `4-layer — Primitives + Theme + Semantic + Component Colors + Typography (e.g. Enterprise systems with full semantic aliasing)`
+**Q7** *(ask_user_input — single_select)*: "Token Tier architecture? [Rec: [Value]]"
+- `1-Tier — Primitives + Typography (e.g. Prototypes or minimal systems)`
+- `2-Tier — Primitives + Theme + Typography (e.g. Standard scale for most apps)`
+- `3-Tier — Primitives + Theme + Component Colors + Typography (e.g. Design-to-Dev parity with component variables)`
+- `4-Tier — Primitives + Theme + Semantic + Component Colors + Typography (e.g. Enterprise systems with full semantic aliasing)`
 
-> ARCHITECTURE NOTE: Component Colors AND Component Dimensions are automatically included in 3-layer and 4-layer. Do NOT ask the user again if they want these collections when they have already chosen 3 or 4 layer.
+> ARCHITECTURE NOTE: Component Colors AND Component Dimensions are automatically included in 3-Tier and 4-Tier. Do NOT ask the user again if they want these collections when they have already chosen 3 or 4 Tier.
 
 ---
 
@@ -90,7 +90,7 @@ Show all optional collection questions as a batch. The Responsive collection is 
 ---
 
 ### TURN 7 — Component Details
-*(Only show if architecture is 3-layer or 4-layer)*
+*(Only show if architecture is 3-Tier or 4-Tier)*
 
 **Q12** *(ask_user_input — single_select)*: "Which components should be included in Component Colors? [Rec: [Value]]"
 - `All standard components (e.g. Button, Input, Card, Modal, Navbar, Table...)`
@@ -134,7 +134,7 @@ Show all optional collection questions as a batch. The Responsive collection is 
 
 **Q18** *(ask_user_input — single_select)*: "Variable path structure? [Rec: [Value]]"
 - `Role-based (e.g. color/surface/primary or color/text/secondary)`
-- `Component-first (e.g. color/button/secondary/default/background)` (HIDDEN if 2-layer chosen)
+- `Component-first (e.g. color/button/secondary/default/background)` (HIDDEN if 2-Tier chosen)
 - `Material Design (e.g. color/surface or color/on-surface)`
 - `IBM Carbon (e.g. color/background or color/text-primary)`
 - `Custom (I'll describe a different naming structure)`
@@ -186,19 +186,19 @@ ARCHITECTURE SUMMARY
 ═══════════════════════════════════════════
 Brand:      {name}
 Product:    {type}
-Layer:      {1/2/3/4}-layer
+Tier:       {1/2/3/4}-Tier
 
 Collections — import in this exact order:
   1.  Primitives             always
   2.  Theme                  always         | {modes}
-  3.  Semantic               4-layer only
+  3.  Semantic               4-Tier only
   4.  Responsive             always         | mobile, tablet, desktop
   5.  Density                {yes/no}       | compact, comfortable, spacious
   6.  Layout                 {yes/no}       | xs→xxl
   7.  Effects                {yes/no}       | (single mode)
   8.  Typography             always         | (single mode)
-  9.  Component Colors       3-layer+       | (single mode)
-  10. Component Dimensions   3-layer+       | (single mode)
+  9.  Component Colors       3-Tier+        | (single mode)
+  10. Component Dimensions   3-Tier+        | (single mode)
   {custom collections}
 
 Colours:       Primary {hex/name}, Secondary {direction}, Neutral {style}
@@ -215,7 +215,7 @@ High contrast: {yes/no}
 **AUTONOMOUS PATH SELECTION (MANDATORY):**
 You (the AI) must choose the safest generation path independently. Do NOT ask the user to choose between Path 1 and Path 2. 
 
-1.  **Evaluate Complexity**: Based on the confirmed architecture (layers, collections, modes), calculate if a single-shot generation is safe.
+1.  **Evaluate Complexity**: Based on the confirmed architecture (Tiers, collections, modes), calculate if a single-shot generation is safe.
 2.  **Declare your choice**: Tell the user: *"Based on the architecture complexity, I have chosen [Path 1: One-Shot / Path 2: Phased] to ensure maximum precision and zero timeouts."*
 3.  **Final Confirmation**:
     Ask using `ask_user_input` (single_select): *"Should I proceed with the generation as described above?"*
@@ -226,7 +226,7 @@ You (the AI) must choose the safest generation path independently. Do NOT ask th
 - Decide this if: You calculate that you can comfortably generate all JSON structures for the requested architecture in a single output window without hitting a timeout or trailing off.
 
 **Path 2: Phased Generation**
-- Decide this if: You calculate the architecture is massive (e.g. 4-layer, or many dense optional collections) and poses a high risk of an output timeout or incomplete JSON generation. Tell the user: *"To ensure absolute precision and prevent timeouts while calculating this massive architecture, I will break this into three background phases (Turns A, B, and C). You will only need to type 'Next' when prompted. I will provide ONE combined final ZIP file at the very end."*
+- Decide this if: You calculate the architecture is massive (e.g. 4-Tier, or many dense optional collections) and poses a high risk of an output timeout or incomplete JSON generation. Tell the user: *"To ensure absolute precision and prevent timeouts while calculating this massive architecture, I will break this into three background phases (Turns A, B, and C). You will only need to type 'Next' when prompted. I will provide ONE combined final ZIP file at the very end."*
 
 **Do not generate a single token until the user confirms "Yes — generate everything".**
 
@@ -246,7 +246,7 @@ Extended thinking during generation turns has previously caused context exhausti
 
 ### Data Blueprint Workflow (MANDATORY)
 Follow this exact 3-step pattern for every generation turn. Do NOT deviate:
-1. **Step 1 — Data Dictionary**: Summarize the interview answers into a compact `brand_data` Python dictionary (hex codes, mode names, font choices, layer count). This is the ONLY planning you do.
+1. **Step 1 — Data Dictionary**: Summarize the interview answers into a compact `brand_data` Python dictionary (hex codes, mode names, font choices, Tier count). This is the ONLY planning you do.
 2. **Step 2 — Script**: 
     - **A. Shared Utility**: Write the code from `references/06-generator-utility.md` into a file named `generator_utils.py`.
     - **B. Generation Script**: Write your generation script (Turn A, B, or C). Import the generator using `from generator_utils import DesignTokenGenerator`. 
@@ -271,8 +271,8 @@ Follow this exact 3-step pattern for every generation turn. Do NOT deviate:
 >     - Before Turn B: Run `validate_responsive_coverage`.
 >     - Before Turn C: Run `validate_semantic_coverage`.
 > 4. **Mandatory Pre-CC Semantic Audit**: Before writing Component Colors, build a flat `cc_to_sem` intent map and call `validate_semantic_coverage()` against it. If any gap is found (e.g. `border/subtle` missing from Semantic), add it to Semantic first. Never allow a "VariableID:0:0" to be written to Component Colors.
-> 5. **Icon Mapping**: The `color/icon/*` group in Component Colors should alias `Theme` for general UI roles (default, muted, brand, error, etc.), unless a specific 4-layer semantic icon layer was requested.
-> 6. **Mandatory $value (Real Value Rule)**: `$value` on alias tokens is a placeholder but must be structural. Use the **Actual Resolved Value** for numbers and strings (safety fallback). Use a **Black Object** for colors. String tokens REQUIRE `"com.figma.type": "string"` at all layers, and **Primitive Strings DO have scopes**. NO curly braces. See `references/03-json-format.md`.
+> 5. **Icon Mapping**: The `color/icon/*` group in Component Colors should alias `Theme` for general UI roles (default, muted, brand, error, etc.), unless a specific 4-Tier semantic icon Tier was requested.
+> 6. **Mandatory $value (Real Value Rule)**: `$value` on alias tokens is a placeholder but must be structural. Use the **Actual Resolved Value** for numbers and strings (safety fallback). Use a **Black Object** for colors. String tokens REQUIRE `"com.figma.type": "string"` at all Tiers, and **Primitive Strings DO have scopes**. NO curly braces. See `references/03-json-format.md`.
 > 7. **Typography Completeness Check**: Before writing Typography, explicitly list every role × every property (fontSize, lineHeight, letterSpacing, fontFamily, fontWeight) as a checklist. Verify all 5 are present for every role. A missing property = a dropped token in Figma.
 > 8. **Semantic Path Verification**: When referencing Semantic in `Component Colors`, verify that the specific path (e.g. `surface/raised`) was actually generated in the Semantic collection. It is not enough to check if the collection exists; you must check the path completeness.
 > 9. **Path Normalization**: Always use `.lower()` when constructing path strings in your Python logic (e.g. `path = f"font/lineheight/{role}".lower()`). Special care for `lineheight`, `letterspacing`, `fontweight` — these must NOT be camelCase in any script lookup, prebuild, or registry call. Normalization must happen at **construction**, not just at lookup.
@@ -372,8 +372,8 @@ Calculate the JSON for these collections ONLY (Save to memory, NO ZIP OUTPUT YET
 
 Calculate the JSON for these collections ONLY:
 1. **Typography:** every role × 5 properties (fontSize/lineHeight/letterSpacing → Responsive; fontFamily/fontWeight → Primitives) + colour tokens → Theme
-2. **Semantic (if applicable):** as per 4-layer architecture rules
-3. **Component Colors:** every component × every variant × every state × every layer + icon duotone tokens
+2. **Semantic (if applicable):** as per 4-Tier architecture rules
+3. **Component Colors:** every component × every variant × every state × every Tier + icon duotone tokens
 4. **Component Dimensions:** all padding/gap (→ Density) + all radius/borderWidth (→ Responsive)
 
 **Critical step:** Now take the JSON from Turn A, Turn B, and Turn C. Package them all together and output **ONE SINGLE `.zip` WIDGET** containing everything. The structure must be folders numbered by import order (e.g. `1. Primitives`, `2. Theme`). No intermediate ZIPs or nested archives.
@@ -399,7 +399,7 @@ Density             14
 Layout              5
 Effects             18
 Typography          72
-Semantic            48       (4-layer only)
+Semantic            48       (4-Tier only)
 Component Colors    186
 Component Dimensions 28
 ──────────────────────────────────

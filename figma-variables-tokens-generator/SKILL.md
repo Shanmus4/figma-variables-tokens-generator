@@ -29,7 +29,7 @@ To prevent context pollution, read only the files required for your current load
 |---|------|---------|
 | 1 | `instructions/01-interview-setup.md` | Initial setup & Turns 1–3 |
 | 2 | `instructions/02-questionnaire-and-generation.md` | Questionnaire Turns 4–10, generation |
-| 3 | `references/01-architecture.md` | **Mandatory Strategy:** Understanding layering and alias rules. |
+| 3 | `references/01-architecture.md` | **Mandatory Strategy:** Understanding Tiers and alias rules. |
 
 ### Load Stage 2: Architecture Confirmation (Read before Phase 2)
 | # | File | Purpose |

@@ -317,7 +317,7 @@ Variable IDs: same variableId in the single effects.tokens.json file. No mode du
 **$metadata.modeName:** `"typography"`
 **Aliases:** Responsive (numerical values) + Primitives (font/family, font/weight) + Theme (colour tokens)
 
-Typography colour tokens alias Theme (not Semantic) because Typography is a cross-cutting concern used across all layers.
+Typography colour tokens alias Theme (not Semantic) because Typography is a cross-cutting concern used across all Tiers.
 
 > [!IMPORTANT]
 > **BACKFILLING CHECK:** Before aliasing any `fontSize`, `lineHeight`, or `letterSpacing` value from `Responsive`, verify that the raw numerical value exists in your **Primitives** collection (e.g. if `subheading` mobile needs `26px`, `font/lineHeight/26` MUST exist in Primitives). If missing, add it to Primitives first.

@@ -1,15 +1,16 @@
 ## Table of Contents
 
 1. [Token Object Structure](#token-object-structure) — primitive, middle-chain, tip token formats
-2. [Complete Alias Chain Samples](#complete-alias-chain-samples) — color, number, string chains by layer
+2. [Complete Alias Chain Samples](#complete-alias-chain-samples) — color, number, string chains by Tier
 3. [aliasData Critical Rules](#aliasdata--critical-rules) — three required fields, no prefix contamination
 4. [Color Token Value](#color-token-value) — always an object, never a hex string
 5. [String Token](#string-token) — com.figma.type requirement
 6. [codeSyntax Format](#codesyntax-format) — format table by target platform
 7. [$metadata Block](#metadata-block) — modeName per collection
 8. [Variable ID Namespaces](#variable-id-namespaces) — namespace table by collection
-9. [ZIP File Structure](#zip-file-structure) — folder structure and Python builder
-10. [Validation Checklist](#validation-checklist) — run before finalising each ZIP
+9. [Architecture Tiers](#architecture-tiers) — chain hierarchy (1/2/3/4-Tier)
+10. [ZIP File Structure](#zip-file-structure) — folder structure and Python builder
+11. [Validation Checklist](#validation-checklist) — run before finalising each ZIP
 
 ---
 
@@ -70,27 +71,29 @@
 > **$value is MANDATORY (CRITICAL RULE):**
 > `$value` is required on EVERY token without exception — including alias/middle-chain tokens. 
 > 
+> `$value` is required on EVERY token without exception — including alias/middle-chain tokens.
+>
 > *"`$value` on alias tokens is a placeholder. It must always be present and valid but Figma ignores it — `aliasData` is what drives the actual resolved value. Never omit `$value` even on alias tokens."*
-> 
+>
 > - **Why?** Figma silently drops any collection containing tokens with a missing `$value` field.
-> - **Real Value Rule (Safety First):** 
+> - **Real Value Rule (Safety First):**
 >   - **Numbers / Strings**: Always use the **Actual Resolved Value** (e.g. `12` or `"Inter"`). If alias resolution fails, Figma may fallback to this value.
 >   - **Colors**: Use a black placeholder object `{..., "hex": "#000000"}`.
-> - **Direct Parent Ownership (Branching Rule)**: Tokens MUST alias their **direct parent** in the chain. 
-  - **4-layer**: Component Colors → Aliases `Semantic`
-  - **2-layer / 3-layer**: Component Colors → Aliases `Theme` (skips non-existent Semantic)
-  - **Typography (Triple Alias Rule)**: 
+> - **Direct Parent Ownership (Branching Rule)**: Tokens MUST alias their **direct parent** in the chain.
+  - **4-Tier**: Component Colors → Aliases `Semantic`
+  - **2-Tier / 3-Tier**: Component Colors → Aliases `Theme` (skips non-existent Semantic)
+  - **Typography (Triple Alias Rule)**:
     - `fontSize`, `lineHeight`, `letterSpacing` → Alias **`Responsive`**
     - `fontFamily`, `fontWeight` → Alias **`Primitives`**
     - `color/*` → Alias **`Theme`**
-- **String Tokens**: REQUIRE `"com.figma.type": "string"` at every layer. Unlike other primitives, **Primitive String Tokens DO have scopes** (FONT_FAMILY, FONT_STYLE).
+- **String Tokens**: REQUIRE `"com.figma.type": "string"` at every Tier. Unlike other primitives, **Primitive String Tokens DO have scopes** (FONT_FAMILY, FONT_STYLE).
 - **Figma Behavior**: Figma resolves the real data via `aliasData`. The `$value` exists for structural validity and safe fallback. No curly-brace syntax or hex inheritance is used.
 
 ## Complete Alias Chain Samples
 
-Follow these full structural patterns. Each layer aliases its **direct parent**.
+Follow these full structural patterns. Each Tier aliases its **direct parent**.
 
-### 1. Color Chain (4-Layer: Primitives → Theme → Semantic → Components)
+### 1. Color Chain (4-Tier: Primitives → Theme → Semantic → Components)
 
 **Primitives (Value)**
 ```json
@@ -132,6 +135,7 @@ Follow these full structural patterns. Each layer aliases its **direct parent**.
     "com.figma.variableId": "VariableID:60:12",
     "com.figma.scopes": ["FRAME_FILL", "SHAPE_FILL"],
     "com.figma.codeSyntax": { "WEB": "--semantic-action-primary-default" },
+    "com.figma.comment": "Aliases Theme (4-Tier architecture only)",
     "com.figma.aliasData": {
       "targetVariableId": "VariableID:40:8",
       "targetVariableName": "surface/brand",
@@ -150,6 +154,7 @@ Follow these full structural patterns. Each layer aliases its **direct parent**.
     "com.figma.variableId": "VariableID:70:44",
     "com.figma.scopes": ["FRAME_FILL", "SHAPE_FILL"],
     "com.figma.codeSyntax": { "WEB": "--color-button-primary-default-background" },
+    "com.figma.comment": "Aliases Semantic (4-Tier) or Theme (2/3-Tier)",
     "com.figma.aliasData": {
       "targetVariableId": "VariableID:60:12",
       "targetVariableName": "action/primary/default",
@@ -159,7 +164,7 @@ Follow these full structural patterns. Each layer aliases its **direct parent**.
 }
 ```
 
-### 2. Number Chain (3-Layer: Primitives → Density → Components)
+### 2. Number Chain (3-Tier: Primitives → Density → Components)
 
 **Primitives (Value)**
 ```json
@@ -210,7 +215,7 @@ Follow these full structural patterns. Each layer aliases its **direct parent**.
 }
 ```
 
-### 3. String Chain (2-Layer: Primitives → Typography)
+### 3. String Chain (2-Tier: Primitives → Typography)
 
 **Primitives (Value + Scope + Type)**
 ```json
@@ -435,7 +440,7 @@ def validate_tokens(files, registries):
                     # RCA 5 Fix: Per-Collection Target Verification
                     if target_set in registries:
                         if target_name not in registries[target_set]:
-                            raise ValueError(f"CROSS-LAYER GAP: Token aliases '{target_name}' in '{target_set}', but that path does not exist in the target collection.")
+                            raise ValueError(f"CROSS-TIER GAP: Token aliases '{target_name}' in '{target_set}', but that path does not exist in the target collection.")
 
                     # Bug 1 Fix: Verify no prefix contamination
                     for s in sets:
@@ -462,7 +467,7 @@ def validate_tokens(files, registries):
 - [ ] Every token has semantically correct scope (TEXT_FILL, FRAME_FILL+SHAPE_FILL, STROKE, EFFECT_COLOR, etc.)
 - [ ] Every token has aliasData pointing to Primitives
 
-### Semantic (4-layer only)
+### Semantic (4-Tier only)
 - [ ] Every token has semantically correct scope (same rules as Theme)
 - [ ] Every token has aliasData pointing to Theme
 

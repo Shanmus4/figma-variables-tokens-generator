@@ -2,7 +2,7 @@
 
 > Part A (Primitives → Typography) is in `05a-collections-core.md`
 
-## Semantic Collection (4-layer only)
+## Semantic Collection (4-Tier only)
 **Mode file:** `semantic.tokens.json`
 **$metadata.modeName:** `"semantic"`
 **Aliases:** Theme
@@ -17,7 +17,7 @@ Theme feedback tokens alias Primitives colour families. The mapping is strict:
 - `warning` → alias `primitives/color/yellow/*`
 - `info` → alias `primitives/color/blue/*`
 
-Never use `color/error/50` as a target in Primitives — that path does not exist. Primitives uses `color/red/50`. Using the wrong family name generates a fresh VariableID pointing to nothing — Figma silently drops all feedback tokens (−16 tokens per layer).
+Never use `color/error/50` as a target in Primitives — that path does not exist. Primitives uses `color/red/50`. Using the wrong family name generates a fresh VariableID pointing to nothing — Figma silently drops all feedback tokens (−16 tokens per Tier).
 
 **RC2 — Never use slash in a JSON key:**
 `"destructive/text"` as a JSON key is a single literal string — Figma reads it as a broken path, not a nested token. Always nest properly:
@@ -73,14 +73,14 @@ For systems requiring explicit pairings (e.g. text on a brand background), use t
 - (repeat pattern for success, warning, info)
 ```
 
-> **SEMANTIC FLOOR RULE:** The Semantic token set described above is a "floor". If a Component Color token needs a variant not listed here (e.g. `border/subtle`), you MUST explicitly add it to Semantic and alias it to the corresponding Theme token BEFORE building the component layer. Never alias Theme from CC directly in a 4-layer system.
+> **SEMANTIC FLOOR RULE:** The Semantic token set described above is a "floor". If a Component Color token needs a variant not listed here (e.g. `border/subtle`), you MUST explicitly add it to Semantic and alias it to the corresponding Theme token BEFORE building the component Tier. Never alias Theme from CC directly in a 4-Tier system.
 
 ---
 
 ## Component Colors Collection
 **Mode file:** `component-colors.tokens.json`
 **$metadata.modeName:** `"component-colors"`
-**Aliases:** Semantic (4-layer) or Theme (2/3-layer)
+**Aliases:** Semantic (4-Tier) or Theme (2/3-Tier)
 **Scopes:** FRAME_FILL+SHAPE_FILL on backgrounds, TEXT_FILL on text, STROKE on borders, SHAPE_FILL+STROKE on icons
 
 ### Mandatory groups (always generate)
@@ -110,7 +110,7 @@ color/icon/success/duotone    SHAPE_FILL
 color/icon/warning/fill       SHAPE_FILL
 color/icon/warning/duotone    SHAPE_FILL
 color/icon/background         FRAME_FILL+SHAPE_FILL (if user confirmed icon bg)
-                                     → semantic/icon/background (4-layer)
+                                     → semantic/icon/background (4-Tier)
                                      or theme/surface/sunken (2/3-layer)
 ```
 

@@ -62,7 +62,7 @@ class DesignTokenGenerator:
 
     def validate_semantic_coverage(self, cc_map, sem_registry):
         """
-        Pre-flight audit for Component Colors -> Semantic coverage (4-layer only).
+        Pre-flight audit for Component Colors -> Semantic coverage (4-Tier only).
         Run BEFORE building Component Colors.
         """
         missing = []
@@ -113,7 +113,9 @@ class DesignTokenGenerator:
             if not target_vid and alias_set == "Primitives":
                 raise KeyError(f"MISSING PRIMITIVE: Target '{target_path}' not found in Primitives registry. You MUST add this primitive before aliasing it.")
             elif not target_vid and target_registry is not None:
-                raise KeyError(f"CROSS-LAYER GAP: Target '{target_path}' not found in {alias_set} registry. This will break the import.")
+                raise KeyError(
+                    f"CROSS-TIER GAP: Target '{target_path}' not found "
+                    f"in {alias_set} registry. This will break the import.")
 
             ext["com.figma.aliasData"] = {
                 "targetVariableId": target_vid or "VariableID:0:0",
@@ -192,7 +194,7 @@ AI Assistant then writes a short script that loops through the map and calls `cr
 
 ### 3. Infinite Permutations
 - **Modes**: Just call `save_mode` twice with different values for the same paths.
-- **Layers**: Just change the `alias_set` argument.
+- **Tiers**: Just change the `alias_set` argument.
 - **Special Tokens**: Just add a new key to the data map. Logic remains the same.
 
 ### 4. Colour Family Helper — Canonical Pattern (CRITICAL)
