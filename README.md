@@ -23,13 +23,14 @@ When triggered, it:
 
 Depending on your environment, there are multiple ways to utilize the Figma Variables Tokens Generator Skill.
 
-| Environment | Import Instruction |
-|-------------|--------------------|
-| **Claude.ai Browser** | Ensure your workspace is connected to a remote repository or upload the unzipped `figma-variables-tokens-generator` folder directly to the project knowledge context. |
-| **Claude Code (CLI)** | Navigate to your project directory and run `npx import-figma-vars-skill@latest` *(Coming Soon)*. |
-| **Cursor IDE** | Add the `figma-variables-tokens-generator` folder to your project context, or drag and drop it into the Cursor chat attachments. |
-| **VS Code (GitHub Copilot)** | Keep the `figma-variables-tokens-generator` folder in your active workspace directory and include it in your prompts using `@workspace`. |
-| **Manual (One-Click ZIP)** | Go to the **Releases** tab on the right side of this GitHub repository page and download `figma-variables-tokens-generator.zip`. Unzip it and provide the folders manually to your AI assistant. |
+| AI Environment | Import & Installation Method |
+|----------------|------------------------------|
+| **Cursor IDE** | Copy the folder to `.cursor/skills/figma-tokens/` in your workspace, or simply attach the folder context manually in chat using `@Folder`. |
+| **Claude Code (CLI)** | Extract the folder into `.claude/skills/figma-tokens/` within your project. Claude Code will automatically detect and read the skill instructions. |
+| **Windsurf** | Extract the folder to your workspace. Reference it in your `.windsurf/rules/rules.md` file, or attach the folder directly to Cascade. |
+| **VS Code (Copilot / Cline)** | Extract the folder into your workspace. Tell Copilot to read the files via `@workspace` instructions, or allow Cline to read the folder contents. |
+| **Claude.ai / ChatGPT (Browser)** | Create a "Project" (Claude) or "Custom GPT" (ChatGPT) and upload the Markdown files as core system knowledge. |
+| **Manual (One-Click ZIP)** | Go to the **Releases** tab on the right side of this GitHub repository page and download `figma-variables-tokens-generator.zip`. |
 
 ---
 
