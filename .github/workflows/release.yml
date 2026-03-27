@@ -1,0 +1,33 @@
+name: Build and Release Skill ZIP
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'figma-variables-tokens-generator/**'
+      - '.github/workflows/release.yml'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create ZIP archive
+        run: |
+          cd figma-variables-tokens-generator
+          zip -r ../figma-variables-tokens-generator.zip . -x "*.DS_Store"
+
+      - name: Update Latest Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest Skill Release
+          body: "Automated build of the Figma Variables Tokens Generator Skill."
+          files: figma-variables-tokens-generator.zip
+          make_latest: true
