@@ -152,12 +152,21 @@ class DesignTokenGenerator:
         p = path.replace('/', '-').replace(' ', '-')
         while '--' in p:
             p = p.replace('--', '-')
+        # WEB: Uses chosen syntax_format (css, kebab, camel, etc.)
+        # ANDROID: underscore_case (e.g. color_button_primary_background)
+        # iOS: PascalCase (e.g. ColorButtonPrimaryBackground)
         if platform == "WEB":
             if self.syntax_format == "css":
                 return f"--{p}"
+            if self.syntax_format == "camel":
+                parts = p.split('-')
+                return parts[0] + ''.join(
+                    w.capitalize() for w in parts[1:])
             return p
-        elif platform in ["ANDROID", "iOS"]:
-            return path
+        elif platform == "ANDROID":
+            return p.replace('-', '_')
+        elif platform == "iOS":
+            return ''.join(w.capitalize() for w in p.split('-'))
         return p
 
     def nest_token(self, tree, path, token):

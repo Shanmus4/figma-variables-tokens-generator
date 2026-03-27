@@ -132,12 +132,26 @@ Show all optional collection questions as a batch. The Responsive collection is 
 - `iOS / Swift PascalCase (e.g. ColorButtonBackground)`
 - `Custom format (I'll describe a different syntax)`
 
-**Q18** *(ask_user_input — single_select)*: "Token naming convention? [Rec: [Value]]"
+**Q18** *(ask_user_input — single_select)*: "Variable path structure? [Rec: [Value]]"
 - `Role-based (e.g. color/surface/primary or color/text/secondary)`
 - `Component-first (e.g. color/button/secondary/default/background)` (HIDDEN if 2-layer chosen)
 - `Material Design (e.g. color/surface or color/on-surface)`
 - `IBM Carbon (e.g. color/background or color/text-primary)`
 - `Custom (I'll describe a different naming structure)`
+
+> **Q18 MUST affect the generated token paths.** The default reference files use Role-based paths. If the user picks a different structure, you must translate the paths when building your generation script. Use this mapping as guidance:
+>
+> | Concept | Role-based | Material Design | IBM Carbon |
+> |---|---|---|---|
+> | Page background | `surface/page` | `surface` | `background` |
+> | Card background | `surface/default` | `surface-variant` | `layer-01` |
+> | Primary text | `text/primary` | `on-surface` | `text-primary` |
+> | Secondary text | `text/secondary` | `on-surface-variant` | `text-secondary` |
+> | Primary action | `interactive/primary` | `primary` | `interactive` |
+> | Error state | `feedback/error` | `error` | `danger` |
+> | Border default | `border/default` | `outline` | `border-subtle` |
+>
+> If the user chooses "Custom", ask them to describe their structure and map the concepts accordingly.
 
 
 > *Conversational Tip:* Reassure the user that modern, scalable systems use terms like `surface/page` or `surface/default` for backgrounds, and `text/primary` for main text. They do not need to worry if they don't see the exact phrase "page background" in the examples.
