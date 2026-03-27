@@ -69,8 +69,6 @@
 ```
 
 > **$value is MANDATORY (CRITICAL RULE):**
-> `$value` is required on EVERY token without exception — including alias/middle-chain tokens. 
-> 
 > `$value` is required on EVERY token without exception — including alias/middle-chain tokens.
 >
 > *"`$value` on alias tokens is a placeholder. It must always be present and valid but Figma ignores it — `aliasData` is what drives the actual resolved value. Never omit `$value` even on alias tokens."*

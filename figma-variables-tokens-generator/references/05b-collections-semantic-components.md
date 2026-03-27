@@ -8,9 +8,9 @@
 **Aliases:** Theme
 **Scopes:** Same as Theme — TEXT_FILL, FRAME_FILL+SHAPE_FILL, STROKE, EFFECT_COLOR
 
-### Critical bug rules — violations cause silent Figma import failures
+### Rules — Violations Cause Silent Figma Import Failures
 
-**RC1 — Feedback alias family names must match Primitives exactly:**
+**RULE 1 — Feedback alias family names must match Primitives exactly:**
 Theme feedback tokens alias Primitives colour families. The mapping is strict:
 - `error` → alias `primitives/color/red/*`
 - `success` → alias `primitives/color/green/*`
@@ -19,7 +19,7 @@ Theme feedback tokens alias Primitives colour families. The mapping is strict:
 
 Never use `color/error/50` as a target in Primitives — that path does not exist. Primitives uses `color/red/50`. Using the wrong family name generates a fresh VariableID pointing to nothing — Figma silently drops all feedback tokens (−16 tokens per Tier).
 
-**RC2 — Never use slash in a JSON key:**
+**RULE 2 — Never use slash in a JSON key:**
 `"destructive/text"` as a JSON key is a single literal string — Figma reads it as a broken path, not a nested token. Always nest properly:
 ```json
 "destructive": {
@@ -29,13 +29,13 @@ Never use `color/error/50` as a target in Primitives — that path does not exis
 ```
 Not: `"destructive/text": { ... }` — this drops the token entirely.
 
-**RC3 — All aliasData targets must exist in the target collection:**
+**RULE 3 — All aliasData targets must exist in the target collection:**
 Before writing any `aliasData.targetVariableName`, verify the path actually exists in the target collection. Common broken paths that cause CC token drops:
 - `border/disabled` — does NOT exist in Semantic. Use `border/default` for disabled border or add `border/disabled` to Semantic explicitly.
 - `action/secondary/disabled` — does NOT exist unless explicitly defined. Define all states you alias.
 Using a non-existent path generates a fresh VariableID that resolves to nothing — Figma silently drops the token.
 
-**RC4 — Typography extended roles must alias Responsive paths that exist:**
+**RULE 4 — Typography extended roles must alias Responsive paths that exist:**
 If you define extended typography roles (display-sm, heading-lg, body-strong etc.), their `fontSize/lineHeight/letterSpacing` must alias Responsive paths that were actually generated. Don't reference `responsive/font/size/display-sm` if that path wasn't included in the Responsive collection.
 
 ```
@@ -111,7 +111,7 @@ color/icon/warning/fill       SHAPE_FILL
 color/icon/warning/duotone    SHAPE_FILL
 color/icon/background         FRAME_FILL+SHAPE_FILL (if user confirmed icon bg)
                                      → semantic/icon/background (4-Tier)
-                                     or theme/surface/sunken (2/3-layer)
+                                     or theme/surface/sunken (2/3-Tier)
 ```
 
 > DUOTONE RULE: The `duotone` token should alias the same colour as `fill` but through the alpha/a20 or a24 variant from Primitives. For example if `fill` → `theme/text/primary` which resolves to `primitives/color/grey/900`, then `duotone` → `primitives/color/grey/a24`. This matches the SVG `opacity="0.2"` pattern for the secondary path of a duotone icon.

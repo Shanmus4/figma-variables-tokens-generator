@@ -10,7 +10,7 @@ Read these **3 files ONLY** before starting the questionnaire. Other reference f
 |---|------|---------|
 | 1 | `instructions/01-interview-setup.md` | (This file) Initial turns & extraction |
 | 2 | `instructions/02-questionnaire-and-generation.md` | Turns 4–10 |
-| 3 | `references/01-architecture.md` | **Mandatory:** Understanding naming, layering, and alias strategy. |
+| 3 | `references/01-architecture.md` | **Mandatory:** Understanding naming, Tiers, and alias strategy. |
 
 > Do NOT read the implementation files (JSON syntax, scoping tables, or collection specs) yet. Stay focused on strategy and the questionnaire — loading them now fills context with data that is not needed until generation.
 
@@ -33,7 +33,7 @@ Read these **3 files ONLY** before starting the questionnaire. Other reference f
 **Turn 4**: Product Type + Colours
 **Turn 5**: Colour Modes + Architecture
 **Turn 6**: Optional Collections
-**Turn 7**: Component Details (3/4 layer only)
+**Turn 7**: Component Details (3/4-Tier only)
 **Turn 8**: Typography + Fonts
 **Turn 9**: Naming + Code Syntax
 **Turn 10**: Summary & Manifest — final confirmation before generation (⛔ HARD STOP)

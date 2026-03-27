@@ -105,7 +105,7 @@ class DesignTokenGenerator:
                 if target_path.startswith(s):
                     target_path = target_path.replace(s, "", 1)
             
-            # Use specific target_registry if provided (Fixes Bug 3 Cross-Layer verification)
+            # Use specific target_registry if provided (Fixes Cross-Tier verification)
             registry = target_registry if target_registry is not None else self.token_registry
             target_vid = registry.get(target_path)
             

@@ -29,7 +29,7 @@ Generate a specific list of collections the user must turn off based on their ex
 - **4-Tier:** "Turn off scopes for **Primitives**. If you use **Theme** and **Semantic** strictly as parents for Component Colors, turn off their scopes too. (Keep scopes ON if you apply their tokens directly to Tiers)."
 - **Optional Collections (If generated):** "If you generated **Responsive** or **Density**, turn off their scopes, as they only feed into Component Dimensions/Typography and should not be picked directly."
 
-> Note: "Hide from publishing" and "turn off scoping" are two different things. Publishing controls what external library consumers see. Scoping controls what appears in the variable picker when a designer applies a variable to a Tier property. Both should be managed. The generated JSON handles Primitives `hiddenFromPublishing: true` already.
+> Note: "Hide from publishing" and "turn off scoping" are two different things. Publishing controls what external library consumers see. Scoping controls what appears in the variable picker when a designer applies a variable to a layer property. Both should be managed. The generated JSON handles Primitives `hiddenFromPublishing: true` already.
 
 ---
 

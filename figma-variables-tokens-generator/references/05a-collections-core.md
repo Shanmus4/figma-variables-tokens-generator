@@ -180,7 +180,7 @@ responsive/font/letterSpacing/body        mobile→0   tablet→0   desktop→0
 responsive/font/letterSpacing/caption     mobile→1   tablet→1   desktop→1
 responsive/font/letterSpacing/overline    mobile→2   tablet→2   desktop→2
 
-**RC4: Extended Roles letterSpacing (CRITICAL):**
+**RULE: Extended Roles letterSpacing**
 If use chooses Extended Scale, you MUST generate unique Responsive paths for every role to prevent ID collapsing:
 - `display-sm` → -2
 - `heading-lg` → -1
@@ -331,7 +331,7 @@ typography/{role}/letterSpacing  LETTER_SPACING → Responsive: font/letterSpaci
 typography/{role}/fontFamily     FONT_FAMILY    → Primitives: font/family/{name}  ← direct to Primitives
 typography/{role}/fontWeight     FONT_STYLE     → Primitives: font/weight/{name}  ← direct to Primitives
 
-> **RC5: LetterSpacing Path Mapping (CRITICAL)**
+> **RULE: LetterSpacing Path Mapping**
 > There is a schema mismatch between Primitives and Responsive for `letterSpacing`:
 > - **Primitives**: Uses semantic names (e.g. `font/letterspacing/tight`).
 > - **Responsive**: Uses role names (e.g. `responsive/font/letterspacing/display`).
