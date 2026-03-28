@@ -77,17 +77,31 @@
     .app-header {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 28px;
     }
     
     .main-title {
         font-family: var(--font-main);
-        font-size: 18px;
-        font-weight: 900;
         text-transform: uppercase;
-        letter-spacing: -0.8px;
-        line-height: 1;
         color: var(--panel-dark);
+        line-height: 1.2;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .title-primary {
+        font-size: 28px;
+        font-weight: 900;
+        letter-spacing: -1.2px;
+        line-height: 1;
+    }
+    
+    .title-secondary {
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        margin-top: 6px;
+        opacity: 0.8;
     }
 
     .tabs-row { display: flex; gap: 0; }
@@ -255,7 +269,10 @@
 
 <div class="system-environment">
     <div class="app-header">
-        <h1 class="main-title">VARIABLES TOKENS COLLECTIONS IMPORTER</h1>
+        <h1 class="main-title">
+            <span class="title-primary">VARIABLES/TOKENS</span>
+            <span class="title-secondary">COLLECTIONS IMPORTER</span>
+        </h1>
         <div class="tabs-row">
             <div id="tab-import" class="tab active" onclick="switchTab('import')">IMPORT</div>
             <div id="tab-export" class="tab inactive" onclick="switchTab('export')">EXPORT</div>
@@ -356,10 +373,10 @@
                     <a href="https://github.com/Shanmus4/figma-variables-tokens-generator" target="_blank" class="footer-link">Docs</a>
                     <div class="footer-link" onclick="toggleContact(true)">Contact</div>
                 </div>
-                <div class="v-stable">V1.1_STABLE</div>
+                <div class="v-stable">V2.0_STABLE</div>
             </div>
             <div class="copyright-row">
-                © 2026 SHANMUGHA SUNDARAM SRINIVASAN. MIT LICENSE.
+                © 2026 SHANMU_S4. MIT LICENSE.
             </div>
         </div>
     </div>
