@@ -19,7 +19,7 @@ figma.showUI(__html__, { width: 420, height: 600, themeColors: true })
 figma.ui.onmessage = async (msg) => {
   switch (msg.type) {
     case 'CHECK_CONFLICTS': await checkConflicts(msg.collections); break
-    case 'IMPORT':          await handleImport(msg.collections, msg.strategy); break
+    case 'IMPORT':          await handleImport(msg.collections, msg.strategy, msg.autoScope); break
     case 'EXPORT':          await handleExport(); break
     case 'GET_COLLECTIONS': sendCollectionsList(); break
   }
@@ -147,7 +147,7 @@ function isBetterEqual(localValue, incomingToken, type, varNameById, varCollById
 
 // ─── IMPORT ───────────────────────────────────────────────────────────────────
 
-async function handleImport(collections, strategy = 'CREATE') {
+async function handleImport(collections, strategy = 'CREATE', autoScope = true) {
   const localCollections = figma.variables.getLocalVariableCollections()
   const results      = []  // per-collection summary
   const pendingAliases = [] // resolved after all variables exist
@@ -277,7 +277,13 @@ async function handleImport(collections, strategy = 'CREATE') {
               const mapped = mapScopes(token.scopes, variable.resolvedType)
               if (mapped.length > 0) variable.scopes = mapped
             }
-            if (token.hidden !== undefined) variable.hiddenFromPublishing = token.hidden
+            if (token.hidden !== undefined) {
+              variable.hiddenFromPublishing = token.hidden
+              // Auto-scoping: If hiddenFromPublishing is true, clear scopes so it doesn't clutter local pickers
+              if (autoScope && token.hidden === true) {
+                variable.scopes = []
+              }
+            }
             if (token.codeSyntax) {
               for (const [platform, value] of Object.entries(token.codeSyntax)) {
                 const p = platform.toUpperCase()
