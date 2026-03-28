@@ -5,7 +5,7 @@
 Welcome to the **Figma Variables Generator Ecosystem**. This project consists of two core components working in tandem to automate the creation and structuring of complex design tokens directly inside Figma.
 
 1. **The AI Skill**: An expert AI prompt architecture that guides you through building a token system and generates a highly structured ZIP of W3C-compliant JSON files.
-2. **The Figma Plugin (v1.1 Stable)**: A dedicated Figma plugin that reads the ZIP file and automatically imports all collections in the precise dependency order required by Figma.
+2. **[Variables Tokens Collections Importer](https://www.figma.com/community/plugin/1619733963699677957)** (v1.1 Stable): A dedicated Figma plugin that reads the ZIP file and automatically imports all collections in the precise dependency order required by Figma.
 
 ---
 
@@ -61,7 +61,7 @@ The **Figma Variables Importer Plugin (v1.1 Stable)** automatically resolves thi
 
 | Environment | Install Instruction |
 |-------------|--------------------|
-| **Figma Community** | *(Placeholder: Link to published Figma Plugin - Coming Soon)* |
+| **Figma Community** | [Install Variables Tokens Collections Importer](https://www.figma.com/community/plugin/1619733963699677957) |
 | **Local Development** | 1. Go to the **Releases** tab on this GitHub repository and download `token-import-plugin-figma.zip`.<br>2. Unzip it to a folder on your computer.<br>3. Open Figma desktop app.<br>4. Go to **Plugins -> Manage Plugins -> Development -> Import plugin from manifest**.<br>5. Select the `manifest.json` inside the unzipped folder. |
 
 ---

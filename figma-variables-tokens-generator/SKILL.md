@@ -4,8 +4,7 @@ description: >
   Generate a fully connected design token system instantly from a chat prompt.
   Supports everything from a simple 1-tier flat architecture all the way up to an 
   enterprise 4-tier setup (Primitives, Theme, Semantic, and Optional collections). The AI will 
-  generate a structured ZIP file that you can simply import into Figma using the 
-  dedicated plugin (https://figma.com/community/plugin/placeholder) to instantly 
+  dedicated plugin ([Variables Tokens Collections Importer](https://www.figma.com/community/plugin/1619733963699677957)) to instantly 
   get all your variables cleanly generated. View the full documentation and 
   repository to learn more: https://github.com/Shanmus4/figma-variables-tokens-generator. 
   Triggered when user asks to create Figma variables, design tokens, a design system, 
