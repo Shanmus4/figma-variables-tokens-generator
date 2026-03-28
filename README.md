@@ -21,10 +21,24 @@ When triggered, it:
 
 ### How to Import the Skill
 
-Depending on your environment, there are multiple ways to utilize the Figma Variables Tokens Generator Skill.
+**⚡ Quick Install (Recommended)**  
+The `skills.sh` registry supports over 40+ coding agents (including Claude Code, Cursor, OpenCode, Windsurf, Copilot, and Gemini). You can install this skill instantly into your project by running:
+
+```bash
+npx skills add Shanmus4/figma-variables-tokens-generator
+```
+
+*(Optional)* To install it globally for all agents or restrict it to specific agents, append these flags:
+```bash
+npx skills add Shanmus4/figma-variables-tokens-generator -g               # Install globally
+npx skills add Shanmus4/figma-variables-tokens-generator -a claude-code   # Install to Claude Code only
+```
+
+Depending on your environment, there are also manual ways to utilize the Figma Variables Tokens Generator Skill:
 
 | AI Environment | Import & Installation Method |
 |----------------|------------------------------|
+| **1-Click Install (`npx skills`)** | Run `npx skills add Shanmus4/figma-variables-tokens-generator` in your project terminal. It auto-detects and installs into your agent workspace (Claude Code, Cursor, Gemini, OpenCode, etc.). |
 | **Cursor IDE** | Download and unzip `figma-variables-tokens-generator.zip` from the Releases tab. Copy the folder to `.cursor/skills/figma-tokens/` in your workspace, or simply attach the folder context manually in chat using `@Folder`. |
 | **Claude Code (CLI)** | Download and unzip `figma-variables-tokens-generator.zip` from the Releases tab. Extract the folder into `.claude/skills/figma-tokens/` within your project. Claude Code will automatically detect and read the skill instructions. |
 | **Gemini CLI** | Download and unzip `figma-variables-tokens-generator.zip` from the Releases tab. Extract the folder into `.gemini/skills/figma-tokens/` within your project to load it as an on-demand Agent Skill. |
@@ -86,3 +100,26 @@ The Skill supports building scalable systems from 1 to 4 Tiers. We utilize "Tier
 
 - **Root Repository:** [Apache License 2.0](./LICENSE)
 - **Figma Variables Generator Skill:** [Proprietary Source Available License](./figma-variables-tokens-generator/LICENSE) — Protects architectural logic and prohibits unauthorized redistribution or commercial exploitation.
+
+---
+
+## Uninstalling
+
+If you installed the skill via `npx skills`, you can quickly remove it using the interactive removal menu:
+
+```bash
+npx skills remove
+```
+
+*(Optional)* Or you can run exact removal commands depending on how you originally installed it:
+
+```bash
+# 1. Project Level: Removes from your current folder's agents
+npx skills remove figma-variables-tokens-generator
+
+# 2. Global Level: Removes from all agents across your entire computer
+npx skills remove figma-variables-tokens-generator -g
+
+# 3. Specific Agent Only: Removes ONLY from Claude Code locally
+npx skills remove figma-variables-tokens-generator -a claude-code
+```

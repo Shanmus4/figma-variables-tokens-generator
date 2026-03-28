@@ -1,15 +1,16 @@
 ---
 name: figma-variables-tokens-generator
 description: >
-  Create production-grade Figma Variables JSON ZIP files for any design system.
-  Triggered when user asks to create Figma variables, design tokens, a design system,
-  or token ZIP files. Also triggered for "build a design system", "create tokens",
+  Generate a fully connected design token system instantly from a chat prompt.
+  Supports everything from a simple 1-tier flat architecture all the way up to an 
+  enterprise 4-tier setup (Primitives, Theme, Semantic, and Optional collections). The AI will 
+  generate a structured ZIP file that you can simply import into Figma using the 
+  dedicated plugin (https://figma.com/community/plugin/placeholder) to instantly 
+  get all your variables cleanly generated. View the full documentation and 
+  repository to learn more: https://github.com/Shanmus4/figma-variables-tokens-generator. 
+  Triggered when user asks to create Figma variables, design tokens, a design system, 
   "Figma token export", "variables for Figma", or any request to set up colours/spacing/
-  typography as Figma variables. Asks a guided questionnaire first using continuous
-  dropdown batches — no filler responses between turns. Generates all ZIP files with
-  zero import errors, guaranteed ID stability across modes, automated backfilling,
-  and clean naming. Loads reference files progressively across four load stages — never
-  all at once.
+  typography as Figma variables.
 ---
 
 # Figma Variables Tokens Generator
