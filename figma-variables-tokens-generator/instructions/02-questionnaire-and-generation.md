@@ -319,7 +319,7 @@ cd figma-variables-generator/scripts && python gen_all.py
 
 **5. Inform the user:**
 After execution, tell the user the exact path where the ZIP was saved. Example:
-> "Your design tokens ZIP has been saved to `figma-variables-generator/export/design-tokens.zip`. You can import this into Figma using the Token Collections Importer plugin."
+> "Your design tokens ZIP has been saved to `figma-variables-generator/export/design-tokens.zip`. You can import this into Figma using the Variables Tokens Collection Importer plugin."
 
 **6. Modifications:**
 If the user requests changes (e.g. "change the blue palette"), modify only `gen_all.py` and re-run. A new auto-numbered ZIP will appear in `export/`. Do NOT rewrite `generator_core.py` — it never changes.
