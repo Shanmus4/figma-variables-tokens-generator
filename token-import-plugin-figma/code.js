@@ -1,4 +1,4 @@
-// Variables Tokens Collection Importer — code.js
+// Variables Tokens Collections Importer — code.js
 // Runs in the Figma plugin sandbox. Has access to figma.* API but no DOM.
 
 const COLLECTION_ORDER = [
