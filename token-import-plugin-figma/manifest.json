@@ -1,6 +1,7 @@
 {
   "name": "Token Collections Importer",
-  "id": "token-porter-figma-variables",
+  "id": "1619733963699677957",
+  "documentAccess": "dynamic-page",
   "api": "1.0.0",
   "main": "code.js",
   "ui": "ui.html",
