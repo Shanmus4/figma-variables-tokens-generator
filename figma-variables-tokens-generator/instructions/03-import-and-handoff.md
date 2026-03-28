@@ -6,7 +6,7 @@ Read this file ONLY after Generation (Turn C) and Token Count Reporting (Turn D)
 ## PHASE 4 — IMPORT INSTRUCTIONS
 
 Tell the user:
-> "Use the **Figma Variables Importer plugin** to import your ZIP. The plugin reads the numbered folder structure and imports collections in the correct dependency order automatically."
+> "Use the **Variables Tokens Collections Importer plugin** to import your ZIP. The plugin reads the numbered folder structure and imports collections in the correct dependency order automatically."
 
 > [!IMPORTANT]
 > **For the AI:** The ZIP's numbered folder prefixes (e.g. `1. Primitives/`, `2. Theme/`) are critical — the plugin uses them to determine import order. Always generate folders with correct numbering as shown in the ZIP Structure Reference below.
