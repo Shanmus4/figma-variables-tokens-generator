@@ -186,6 +186,10 @@ RESPONSIVE_FONT_SIZE = {
     "caption":     {"mobile": 11, "tablet": 11, "desktop": 12},
     "overline":    {"mobile": 10, "tablet": 10, "desktop": 11},
     "code":        {"mobile": 12, "tablet": 13, "desktop": 14},
+    "code-lg":     {"mobile": 16, "tablet": 17, "desktop": 18},
+    "code-sm":     {"mobile": 12, "tablet": 13, "desktop": 14},
+    "strong":      {"mobile": 14, "tablet": 15, "desktop": 16},
+    "numeric":     {"mobile": 14, "tablet": 15, "desktop": 16},
 }
 
 RESPONSIVE_LINE_HEIGHT = {
@@ -199,6 +203,10 @@ RESPONSIVE_LINE_HEIGHT = {
     "caption":     {"mobile": 16, "tablet": 16, "desktop": 16},
     "overline":    {"mobile": 14, "tablet": 14, "desktop": 16},
     "code":        {"mobile": 18, "tablet": 18, "desktop": 20},
+    "code-lg":     {"mobile": 24, "tablet": 26, "desktop": 28},
+    "code-sm":     {"mobile": 18, "tablet": 18, "desktop": 20},
+    "strong":      {"mobile": 20, "tablet": 22, "desktop": 24},
+    "numeric":     {"mobile": 20, "tablet": 22, "desktop": 24},
 }
 
 RESPONSIVE_LETTER_SPACING = {
@@ -207,6 +215,10 @@ RESPONSIVE_LETTER_SPACING = {
     "body":     {"mobile": 0,  "tablet": 0,  "desktop": 0},
     "caption":  {"mobile": 1,  "tablet": 1,  "desktop": 1},
     "overline": {"mobile": 2,  "tablet": 2,  "desktop": 2},
+    "code-lg":  {"mobile": 0,  "tablet": 0,  "desktop": 0},
+    "code-sm":  {"mobile": 0,  "tablet": 0,  "desktop": 0},
+    "strong":   {"mobile": 0,  "tablet": 0,  "desktop": 0},
+    "numeric":  {"mobile": 0,  "tablet": 0,  "desktop": 0},
 }
 
 RESPONSIVE_RADIUS = {
