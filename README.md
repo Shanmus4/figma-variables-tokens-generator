@@ -51,7 +51,7 @@ The AI Skill acts as an expert token architect (understanding both product desig
 When triggered, it:
 1. **Interviews You**: Asks targeted questions using structured dropdowns to establish your brand colors, spacing, typography, and desired architecture (Tier 1 through 4).
 2. **Validates Scope**: Ensures all tokens are built with strict Figma scoping rules (e.g., locking background colors to `FRAME_FILL`).
-3. **Generates ZIP Files**: Chunks the generation into phases to prevent AI context timeouts, producing a final ZIP inside an `exports/` folder. Inside that ZIP, collections are stored under auto-numbered paths (e.g., `1. Primitives/`, `2. Theme/`).
+3. **Generates ZIP Files**: Uses a Python-based Smart SDK with declarative Builder APIs to generate the entire deterministic system in a single-shot execution, preventing LLM context exhaustion. It produces a final ZIP inside an `exports/` folder where collections are stored under numeric paths (e.g., `1. Primitives/`, `2. Theme/`).
 4. **Maintains Stability**: Guarantees ID stability across modes and correct alias chain references.
 
 ### How to Import the Skill

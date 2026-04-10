@@ -1,7 +1,9 @@
 # Figma Variables — Handoff
 
-### 🏁 READ LOAD STAGE 4: Delivery & Handoff
-Read this file ONLY after Generation (Turn C) and Token Count Reporting (Turn D) are complete.
+## Phase 4: Import & Handoff (Final Turn)
+
+> **MANDATORY TIMING CHECK:**
+> Read this file ONLY after Generation and Token Count Reporting are complete.
 
 ## PHASE 4 — IMPORT INSTRUCTIONS
 
