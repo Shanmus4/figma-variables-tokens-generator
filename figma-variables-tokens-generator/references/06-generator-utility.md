@@ -111,12 +111,19 @@ Generates the Semantic collection with ~94 tokens across: surface (12), text (15
 
 **4-Tier only.** Same token structure as `build_semantic()` but with light/dark modes, aliasing Primitives. Automatically skipped for 2/3-Tier.
 
-### `build_responsive(scale="standard")`
+### `build_responsive(scale="standard", extra_size_map=None, extra_lh_map=None, extra_ls_map=None)`
 
 Generates Responsive collection with mobile/tablet/desktop breakpoint modes.
 
+| Parameter | Type | Description |
+|---|---|---|
+| `scale` | `str` | Breakpoint scale base (default: `"standard"`) |
+| `extra_size_map` | `dict` | Custom sizes, e.g. `{"code-lg": {"mobile": 16, "tablet": 17, "desktop": 18}}` |
+| `extra_lh_map` | `dict` | Custom line heights for roles |
+| `extra_ls_map` | `dict` | Custom letter spacing for roles |
+
 **Auto-generated tokens:**
-- `font/size/{role}` — 12 typography roles (display through code)
+- `font/size/{role}` — 12 standard typography roles + extras
 - `font/lineHeight/{role}` — matching line heights
 - `font/letterSpacing/{role}` — matching letter spacing
 - `radius/{name}` — 8 radius tokens per breakpoint

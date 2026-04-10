@@ -186,10 +186,6 @@ RESPONSIVE_FONT_SIZE = {
     "caption":     {"mobile": 11, "tablet": 11, "desktop": 12},
     "overline":    {"mobile": 10, "tablet": 10, "desktop": 11},
     "code":        {"mobile": 12, "tablet": 13, "desktop": 14},
-    "code-lg":     {"mobile": 16, "tablet": 17, "desktop": 18},
-    "code-sm":     {"mobile": 12, "tablet": 13, "desktop": 14},
-    "strong":      {"mobile": 14, "tablet": 15, "desktop": 16},
-    "numeric":     {"mobile": 14, "tablet": 15, "desktop": 16},
 }
 
 RESPONSIVE_LINE_HEIGHT = {
@@ -203,10 +199,6 @@ RESPONSIVE_LINE_HEIGHT = {
     "caption":     {"mobile": 16, "tablet": 16, "desktop": 16},
     "overline":    {"mobile": 14, "tablet": 14, "desktop": 16},
     "code":        {"mobile": 18, "tablet": 18, "desktop": 20},
-    "code-lg":     {"mobile": 24, "tablet": 26, "desktop": 28},
-    "code-sm":     {"mobile": 18, "tablet": 18, "desktop": 20},
-    "strong":      {"mobile": 20, "tablet": 22, "desktop": 24},
-    "numeric":     {"mobile": 20, "tablet": 22, "desktop": 24},
 }
 
 RESPONSIVE_LETTER_SPACING = {
@@ -215,10 +207,6 @@ RESPONSIVE_LETTER_SPACING = {
     "body":     {"mobile": 0,  "tablet": 0,  "desktop": 0},
     "caption":  {"mobile": 1,  "tablet": 1,  "desktop": 1},
     "overline": {"mobile": 2,  "tablet": 2,  "desktop": 2},
-    "code-lg":  {"mobile": 0,  "tablet": 0,  "desktop": 0},
-    "code-sm":  {"mobile": 0,  "tablet": 0,  "desktop": 0},
-    "strong":   {"mobile": 0,  "tablet": 0,  "desktop": 0},
-    "numeric":  {"mobile": 0,  "tablet": 0,  "desktop": 0},
 }
 
 RESPONSIVE_RADIUS = {
@@ -1129,7 +1117,7 @@ class DesignTokenGenerator:
 
         self._current_collection = None
 
-    def build_responsive(self, scale="standard"):
+    def build_responsive(self, scale="standard", extra_size_map=None, extra_lh_map=None, extra_ls_map=None):
         """
         Build the Responsive collection with mobile/tablet/desktop modes.
         """
@@ -1137,13 +1125,17 @@ class DesignTokenGenerator:
         coll_name = f"{folder_num}. Responsive"
         self._current_collection = "Responsive"
 
+        font_sizes = {**RESPONSIVE_FONT_SIZE, **(extra_size_map or {})}
+        line_heights = {**RESPONSIVE_LINE_HEIGHT, **(extra_lh_map or {})}
+        letter_spacings = {**RESPONSIVE_LETTER_SPACING, **(extra_ls_map or {})}
+
         # Gather all responsive paths
         all_paths = []
-        for role in RESPONSIVE_FONT_SIZE:
+        for role in font_sizes:
             all_paths.append(f"font/size/{role}")
-        for role in RESPONSIVE_LINE_HEIGHT:
+        for role in line_heights:
             all_paths.append(f"font/lineHeight/{role}")
-        for role in RESPONSIVE_LETTER_SPACING:
+        for role in letter_spacings:
             all_paths.append(f"font/letterSpacing/{role}")
         for name in RESPONSIVE_RADIUS:
             all_paths.append(f"radius/{name}")
@@ -1156,7 +1148,7 @@ class DesignTokenGenerator:
             tree = {}
 
             # Font sizes
-            for role, modes in RESPONSIVE_FONT_SIZE.items():
+            for role, modes in font_sizes.items():
                 p = f"font/size/{role}"
                 v = modes[mode]
                 t = self.create_token(p, NS_RESPONSIVE, "number", value=v,
@@ -1167,7 +1159,7 @@ class DesignTokenGenerator:
                 self.nest_token(tree, p, t)
 
             # Line heights
-            for role, modes in RESPONSIVE_LINE_HEIGHT.items():
+            for role, modes in line_heights.items():
                 p = f"font/lineHeight/{role}"
                 v = modes[mode]
                 t = self.create_token(p, NS_RESPONSIVE, "number", value=v,
@@ -1178,7 +1170,7 @@ class DesignTokenGenerator:
                 self.nest_token(tree, p, t)
 
             # Letter spacing
-            for role, modes in RESPONSIVE_LETTER_SPACING.items():
+            for role, modes in letter_spacings.items():
                 p = f"font/letterSpacing/{role}"
                 v = modes[mode]
                 # Letter spacing uses named primitives
