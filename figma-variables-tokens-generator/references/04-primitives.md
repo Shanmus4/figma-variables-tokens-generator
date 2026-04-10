@@ -1,5 +1,8 @@
 # Primitives Reference
 
+> [!NOTE]
+> **`build_primitives()` handles all standard scales automatically**, including shade 950, extended spacing (6, 10, 14), extended font sizes (44, 52), feedback colors, white/black alphas, and all geometry scales. This file is kept as architectural reference for customization needs.
+
 ## Dynamic Scale Adaptation
 
 The scales below (10 colour shades, 16 spacing values, etc.) are the STANDARD defaults. 

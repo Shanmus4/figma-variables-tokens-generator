@@ -1,5 +1,7 @@
 # Collection Specs Reference
 
+> [!NOTE]
+> **Builder methods handle all standard collection patterns**: `build_semantic()`, `build_responsive()`, `build_density()`, `build_layout()`, `build_effects()`, `build_typography()`, `build_component_colors()`, `build_component_dimensions()`. This file is kept as architectural reference for understanding token structure and customization needs.
 ## Table of Contents
 1. [Primitives](#primitives) — colour palette, spacing, shadow geometry, font primitives
 2. [Semantic Collection (2/3-Tier)](#semantic-collection-23-tier) — modes: light/dark, aliases Primitives

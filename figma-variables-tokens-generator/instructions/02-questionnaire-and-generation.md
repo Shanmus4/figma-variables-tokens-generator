@@ -359,51 +359,45 @@ LLMs need to execute "Chain of Thought" reasoning to accurately build dynamic lo
 Follow this exact pattern for every generation turn. Do NOT deviate:
 1. **Brief Strategy:** 2-3 bullets acknowledging the high-level architecture context.
 2. **Execute — The Script**: 
-    - **A. Shared Utility**: Inside the script, write the code from `references/06-generator-utility.md` into `generator_utils.py` (or embed it).
-    - **B. Data Maps**: Inside the script, define your hex codes and paths in standard Python dicts/lists.
-    - **C. Loop**: Loop through your data calling `create_token` and `nest_token`. Use the self-correcting prefix stripping and backfilling guards built into the utility.
+    - **A. Shared Utility**: Write `generator_core.py` from `scripts/generator_core.py` (or confirm it exists from a previous run).
+    - **B. Brand Data**: Inside `gen_all.py`, define your brand color hex codes as shade lists.
+    - **C. Builder Calls**: Call `build_*()` methods for standard collections. Use `create_token()` only for custom collections.
     - **D. Persistence (FAIL-SAFE)**: Do NOT pickle the `gen` object directly. Use `pickle.dump(gen.to_dict(), f)` to save state as a plain dictionary.
-    - **Zero narration during generation**: Do not explain the output or summarize what was generated. Deliver the ZIP widget, then proceed to Turn D (token count table). The follow-up conversation in Phase 6 of the handoff file happens after this.
+    - **Zero narration during generation**: Do not explain the output or summarize what was generated. Deliver the ZIP widget, then proceed to Turn D (token count table).
 
-> **Performance & Stability Guardrails** — Serialization errors and script timeouts silently break the output ZIP. Follow these to prevent them:
-> 1. **Default to Single-Script Generation**: Always write all generation phases in a **single `gen_all.py`** script. This runs all phases sequentially in memory and avoids all serialization problems (The "No Wasted Runs" Rule). Only split into separate scripts if token count exceeds ~1000 and context truncation is a critical risk.
-> 2. **No Cross-Script Pickle of Class Instances**: Never pickle a `DesignTokenGenerator` instance across different scripts. Pickle stores class module paths (e.g. `__main__`) which break when loaded in a different script. If splitting is unavoidable, define the class in a shared `generator_core.py`, OR save state as a plain JSON dict via `to_dict()`.
-> 3. **No Bespoke Logic**: Do NOT "invent" custom loop logic. Use the patterns in `references/06-generator-utility.md`.
-> 4. **Resumption Rule**: If interrupted (Continue button), pick up immediately from where you left off in the script. Do NOT repeat reasoning.
-> 5. **Script Conciseness**: Rely on the blueprint patterns to keep the Python payload small.
+> **Performance & Stability Guardrails**
+> 1. **Default to Single-Script Generation**: Always write all generation phases in a **single `gen_all.py`** script. Only split if context truncation is a critical risk.
+> 2. **No Cross-Script Pickle of Class Instances**: Never pickle a `DesignTokenGenerator` instance across different scripts. Use `to_dict()` / `from_dict()` if splitting is unavoidable.
+> 3. **Use Builder Methods**: For ALL standard collections, use `build_*()` methods from `references/06-generator-utility.md`. Only use `create_token()` for custom collections (Q11).
+> 4. **Resumption Rule**: If interrupted (Continue button), pick up immediately from where you left off.
+> 5. **Script Conciseness**: A complete 3-Tier system should be ~40-80 lines of `gen_all.py`.
 
-> **Alias Integrity & Backfilling** — Broken aliases cause silent Figma import failures (the variable panel shows VariableID:0:0 with no warning). Verify every link:
-> 1. **The Backfilling Rule**: If a structural collection (Density, Responsive, Layout) requires a value NOT in your current Primitives scale (e.g., 30px lineHeight), stop immediately and add that value to the `Primitives` collection. The `create_token` utility will raise a `KeyError` if you attempt to alias a missing Primitive — do not ignore this.
-> 2. **Verification Step**: Before outputting Turn C, run a mental "Pre-flight" check. Every `aliasData` targetVariableName must exist in the parent file. Check every token for mandatory `$value`.
-> 3. **Pre-Generation Coverage Audit**: 
->     - Before Turn A: N/A.
->     - Before Turn B: Run `validate_responsive_coverage`.
->     - Before Turn C: Run `validate_semantic_coverage`.
-> 4. **Mandatory Pre-CC Semantic Audit**: Before writing Component Colors, build a flat `cc_to_sem` intent map and call `validate_semantic_coverage()` against it. If any gap is found (e.g. `border/subtle` missing from Semantic), add it to Semantic first. Never allow a "VariableID:0:0" to be written to Component Colors.
-> 5. **Icon Mapping**: The `color/icon/*` group in Component Colors should alias `Semantic` for general UI roles (default, muted, brand, error, etc.). Component Colors ALWAYS aliases Semantic — never Theme, never Primitives.
-> 6. **Mandatory $value (Real Value Rule)**: `$value` on alias tokens is a placeholder but must be structural. Use the **Actual Resolved Value** for numbers and strings (safety fallback). Use a **Black Object** for colors. String tokens REQUIRE `"com.figma.type": "string"` at all Tiers, and **Primitive Strings DO have scopes**. NO curly braces. See `references/03-json-format.md`.
-> 7. **Typography Completeness Check**: Before writing Typography, explicitly list every role × every property (fontSize, lineHeight, letterSpacing, fontFamily, fontWeight) as a checklist. Verify all 5 are present for every role. A missing property = a dropped token in Figma.
-> 8. **Semantic Path Verification**: When referencing Semantic in `Component Colors`, verify that the specific path (e.g. `surface/raised`) was actually generated in the Semantic collection. It is not enough to check if the collection exists; you must check the path completeness.
-> 9. **Path Normalization**: Always use `.lower()` when constructing path strings in your Python logic (e.g. `path = f"font/lineheight/{role}".lower()`). Special care for `lineheight`, `letterspacing`, `fontweight` — these must NOT be camelCase in any script lookup, prebuild, or registry call. Normalization must happen at **construction**, not just at lookup.
-> 10. **Naming Collision Check (Mandatory)**: Before building any collection, verify no path is both a token ($value) and a group (children). If `action/destructive` has a value, it cannot have children like `action/destructive/text`. **Fix**: Move the base value to `action/destructive/default`.
-> 11. **Contextual Hiding Logic (Intelligence Rule)**: Set `hidden_from_publishing=True` based on the Architecture (Q7) and the per-tier table in `01-architecture.md`:
->     - **1-Tier**: Everything is **Visible** (Primitives are the picking layer).
->     - **2-Tier**: Primitives = **Hidden**. Semantic, Responsive, Density, Typography, Effects, Layout = **Visible** (No components exist, so users pick from these layers).
->     - **3-Tier**: Primitives, Semantic, Responsive, Density = **Hidden**. Component Colors, Component Dimensions, Typography, Effects, Layout = **Visible**.
->     - **4-Tier**: Primitives, Theme, Semantic, Responsive, Density = **Hidden**. Component Colors, Component Dimensions, Typography, Effects, Layout = **Visible**.
-> 12. **Custom Collection Alias Rule**: Color tokens in Custom Collections (ns 90+) are NOT allowed to have hardcoded hex values. They MUST alias Primitives. If the hex is new, backfill it into Primitives first.
-> 13. **Pre-Generation Coverage Audit — All Collections**: Before building any collection, run `validate_responsive_coverage` from `06-generator-utility.md`. If it fails, add the missing primitives to your Turn A script before saving the Primitives collection. Never proceed to aliasing until the audit passes.
-> 14. **TOKEN COUNTING RULE (CRITICAL)**: Count unique token PATHS, not mode instances. A Semantic token with light + dark modes is **1 token**, not 2. A Responsive token with mobile + tablet + desktop modes is **1 token**, not 3. The Turn D count table must reflect unique paths only. Never multiply by mode count.
-> 15. **Scoping Rule**: ALL tokens in ALL collections (including Primitives) receive correct scopes via `get_scope()` from `02-scoping-rules.md`. Pass `is_primitive=True` for Primitives. No token should have an absent scope key.
+> **What the SDK Handles Automatically** — You do NOT need to manually manage these:
+> 1. **Scoping**: Auto-derived from path + type via `get_scope()`. Override with explicit `scope=` only for unusual custom tokens.
+> 2. **hiddenFromPublishing**: Auto-derived from tier + collection. Override with explicit `hidden_from_publishing=` only if needed.
+> 3. **Number Backfilling**: Missing number primitives (e.g., `spacing/12`) are auto-created. Color/string primitives still require manual definition.
+> 4. **ID Pre-building**: Builder methods handle `prebuild_ids()` internally for multi-mode collections.
+> 5. **Alias Path Stripping**: Collection prefixes are auto-stripped from alias targets.
+> 6. **Batch Error Reporting**: The SDK collects all errors instead of crashing. The generation report shows auto-fixes and remaining issues.
+> 7. **Default Scales**: Primitives include 22 spacing values, 25 font sizes, 8 radius levels, 6 border widths, feedback colors, etc.
+> 8. **Semantic Shade Mapping**: Light/dark shade inversion is built into `build_semantic()`.
 
-**Output constraint:** Output only valid `.zip` files containing the structured JSON. Do not output `.skill` files or dump raw scripts — this confuses users who expect ready-to-import ZIPs and risks context truncation.
+> **What You Still Must Handle:**
+> 1. **Brand Color Hex Codes**: Define the user's brand color shades (11 shades: 50-950).
+> 2. **Custom Collections (Q11)**: Use `create_token()` for any non-standard collections. Backfill Primitives for custom color needs.
+> 3. **Extra Semantic Tokens**: Pass `extra_tokens={}` to `build_semantic()` for brand-specific semantic tokens beyond the standard ~94.
+> 4. **Component List**: Pass the component list from Q9 to `build_component_colors()`.
+> 5. **Font Choices**: Pass user's font selections to `build_primitives()` and `build_typography()`.
+> 6. **Naming Collision Check**: No path can be both a token ($value) and a group (children). Fix: move base value to `/default`.
+> 7. **TOKEN COUNTING RULE**: Count unique token PATHS, not mode instances. A Semantic token with light + dark modes is **1 token**, not 2.
+
+**Output constraint:** Output only valid `.zip` files containing the structured JSON. Do not output `.skill` files or dump raw scripts.
 
 ### Local Environment Output (IDE / CLI / Desktop Apps)
 
-If you have **local filesystem access** (running in an IDE, CLI, terminal-based tool, or desktop AI app), use the disk-based output workflow instead of a download widget:
+If you have **local filesystem access**, use the disk-based output workflow:
 
 **1. Project Setup (first run only):**
-Create this folder structure in the user's current working directory:
 ```
 figma-variables-generator/
 ├── scripts/
@@ -413,46 +407,51 @@ figma-variables-generator/
     └── (ZIPs appear here)
 ```
 
-Run these commands:
-```bash
-mkdir -p figma-variables-generator/scripts figma-variables-generator/export
-```
-
 **2. Write `generator_core.py` (first run only):**
-Write the contents of `scripts/generator_core.py` (from this skill) to `figma-variables-generator/scripts/generator_core.py`. If it already exists from a previous run, **skip this step**.
+Write the contents of `scripts/generator_core.py` to the user's scripts folder. If it already exists, **skip this step**. NEVER modify this file.
 
 **3. Write `gen_all.py` (every run):**
-Write your brand-specific generation script to `figma-variables-generator/scripts/gen_all.py`. This script should:
-- Import from `generator_core`: `from generator_core import DesignTokenGenerator, prebuild_ids, make_family`
-- Follow the same Data Blueprint Workflow (brand_data dict → create_token loops → save_mode)
-- End with `gen.build_zip(output_dir="../export")` to write the ZIP to the export folder
-- The `build_zip()` method auto-numbers if a ZIP already exists (e.g. `design-tokens (1).zip`)
+A complete `gen_all.py` using the builder API:
 
-**4. Execute:**
-```bash
-cd figma-variables-generator/scripts && python gen_all.py
+```python
+from generator_core import DesignTokenGenerator
+
+# ── Brand data ──
+BRAND_SHADES = [
+    ("50","#..."), ("100","#..."), ..., ("950","#..."),
+]
+
+gen = DesignTokenGenerator("BrandName", tier=3, syntax_format="css")
+
+gen.build_primitives(
+    brand_colors={"brand": BRAND_SHADES},
+    grey_family="slate",
+    font_families={"sans": "Inter", "serif": "Playfair Display", "mono": "JetBrains Mono"},
+)
+gen.build_semantic(brand="brand", grey="slate")
+gen.build_responsive()
+gen.build_density()
+gen.build_layout()
+gen.build_effects()
+gen.build_typography(body_font="sans", display_font="sans", mono_font="mono")
+gen.build_component_colors(components=["button", "input", "card"])
+gen.build_component_dimensions()
+
+gen.verify_all_aliases()
+gen.build_zip(output_dir="../export")
 ```
 
-**5. Inform the user:**
-After execution, tell the user the exact path where the ZIP was saved. Example:
-> "Your design tokens ZIP has been saved to `figma-variables-generator/export/design-tokens.zip`. You can import this into Figma using the Variables Tokens Collections Importer plugin."
+**4. Execute:** `cd figma-variables-generator/scripts && python gen_all.py`
 
-**6. Modifications:**
-If the user requests changes (e.g. "change the blue palette"), modify only `gen_all.py` and re-run. A new auto-numbered ZIP will appear in `export/`. Do NOT rewrite `generator_core.py` — it never changes.
+**5. Modifications:** If the user requests changes, modify only `gen_all.py` and re-run. **NEVER rewrite `generator_core.py`.**
 
-> **Phased generation in local mode:** For Turn A/B/C, write a single `gen_all.py` that includes all phases. Use `pickle.dump(gen.to_dict(), f)` between turns only if context limits require splitting across separate conversations. Within the same conversation, keep everything in one script.
-
-> **Browser environments:** If you are running in a browser-based sandbox (no filesystem access), ignore this section entirely. Use the standard download widget approach.
-
-> **Critical performance rule for Path 2:** Do NOT attempt to write one giant script or generate all JSON in a single turn. Break the generation across multiple turns as instructed below. Wait for the user to reply "Next" before proceeding.
+> **Browser environments:** If running in a browser sandbox (no filesystem), use the standard download widget approach.
 
 ---
 
 ### PATH 1: ONE-SHOT GENERATION
 *(Execute immediately after user confirms "Yes", skipping Turns A/B/C)*
-Generate all collections (Primitives, Theme, Responsive, Typography, plus any selected optional collections). 
-Compile all JSON data and output **ONE single `.zip` widget** containing all files. 
-Then, jump directly to **Turn D (Token count reporting)**.
+Generate all collections using builder methods in a single `gen_all.py`. Output **ONE `.zip` widget**. Then jump to **Turn D (Token count reporting)**.
 
 ---
 
@@ -460,71 +459,68 @@ Then, jump directly to **Turn D (Token count reporting)**.
 *(Execute if complexity requires chunking)*
 
 ### TURN A — Core Foundations
-**Before writing Primitives:** You MUST audit ALL downstream collections — especially **Custom Collections (Q11)** — for new raw values (brand hexes, specific spacing numbers, etc). If a Custom Collection requires a new hex, you MUST define it in your `brand_data` Primitive mapping right now. Apply the Backfilling Rule here. Do NOT enumerate individual tokens in your thinking block. Write your `brand_data` dictionary immediately!
-
-Calculate the JSON for these collections ONLY (Save to memory, NO ZIP OUTPUT YET):
-1. **Primitives:** full colour palette + alpha variants (flat-sibling pattern) + all font tokens under `font/` group + layout primitive values + spacing + shadow geometry + borderWidth (0.3/0.5/0.8/1/2/4) + radius + blur. **ALL Primitives get scopes via `get_scope(is_primitive=True)`.**
+Write `gen_all.py` with:
+1. **`build_primitives()`**: Brand colors from Q3 + grey family from Q4 + font families from Q5. All scales (spacing, radius, etc.) are auto-included.
 2. **Mode-switching collection (TIER-DEPENDENT):**
-   - **2-Tier / 3-Tier → Build `Semantic` with modes** (light.tokens.json + dark.tokens.json). Aliases Primitives. Every surface/text/border/interactive/feedback/overlay/icon/shadow group. **Minimum 55 unique token paths** (see Semantic Floor Rule in `05b`). Use the token count from Q7b (Lean/Standard/Enterprise) to decide density.
-   - **4-Tier → Build `Theme` with modes** (light.tokens.json + dark.tokens.json). Aliases Primitives. Same token groups as Semantic.
+   - **2-Tier / 3-Tier →** `build_semantic(brand="...", grey="...")`
+   - **4-Tier →** `build_theme(brand="...", grey="...")`
 
-*Stop here. Explicitly tell the user: "Turn A complete (Primitives & [Semantic/Theme]). Type **Next** to generate structural collections (Responsive, Density, Layout, Effects)."*
+*Stop. Tell user: "Turn A complete. Type **Next** for structural collections."*
 
 ---
 
 ### TURN B — Structural Collections
 *(Wait for user to type "Next")*
 
-Calculate the JSON for these collections ONLY (Save to memory, NO ZIP OUTPUT YET):
-1. **Responsive:** all font size/lineHeight/letterSpacing roles × 3 breakpoints + radius × 3 breakpoints + borderWidth × 3 breakpoints
-2. **Density:** padding (x/y/top/bottom/left/right, with full xs-4xl scale nested under each direction — e.g. `padding/x/md`, values up to 64px at spacious) + gap (xs/sm/md/lg/xl/2xl/3xl/4xl — up to 128px at spacious) × 3 modes
-3. **Layout:** Layout structural variables (if selected)
-4. **Effects:** shadow sm/md/lg/xl (colour → **Semantic** (2/3-Tier) or **Theme** (4-Tier), geometry → Primitives) + blur tokens
+Add to `gen_all.py`:
+1. `gen.build_responsive()`
+2. `gen.build_density()`
+3. `gen.build_layout()`
+4. `gen.build_effects()`
 
-*Stop here. Explicitly tell the user: "Turn B complete. Type **Next** to generate the final component collections and compile the ZIP."*
+*Stop. Tell user: "Turn B complete. Type **Next** for components and ZIP."*
 
 ---
 
 ### TURN C — Components & Final Compilation
 *(Wait for user to type "Next")*
 
-Calculate the JSON for these collections ONLY:
-1. **Typography:** every role × 5 properties (fontSize/lineHeight/letterSpacing → Responsive; fontFamily/fontWeight → Primitives) + colour tokens → **Semantic** (2/3-Tier) or **Theme** (4-Tier)
-2. **Semantic (4-Tier ONLY):** Build `semantic.tokens.json` (single mode, no light/dark). Aliases **Theme**. Same token paths as Theme but one level higher in the chain. **Minimum 55 unique token paths.**
-3. **Component Colors (3-Tier / 4-Tier):** every component × every variant × every state + icon duotone tokens. **MUST alias Semantic — never Theme, never Primitives.** Run `validate_semantic_coverage()` before building.
-4. **Component Dimensions (3-Tier / 4-Tier):** all padding/gap (→ Density) + all radius/borderWidth (→ Responsive)
+Add to `gen_all.py`:
+1. `gen.build_typography(body_font="...", display_font="...", mono_font="...")`
+2. **4-Tier ONLY:** `gen.build_semantic(brand="...", grey="...")` (single mode, aliases Theme)
+3. `gen.build_component_colors(components=[...])` — Use component list from Q9
+4. `gen.build_component_dimensions()`
+5. Any **Custom Collections (Q11)** using manual `create_token()` calls
+6. `gen.verify_all_aliases()`
+7. `gen.build_zip(output_dir="exports")`
 
-**Critical step:** Now take the JSON from Turn A, Turn B, and Turn C. Package them all together and output **ONE SINGLE `.zip` WIDGET** containing everything. The structure must be folders numbered by import order per the chosen tier (e.g. 3-Tier: `1. Primitives`, `2. Semantic`; 4-Tier: `1. Primitives`, `2. Theme`, `3. Semantic`). No intermediate ZIPs or nested archives.
-
-*Automatically proceed to Turn D.*
+Output **ONE SINGLE `.zip` WIDGET** containing everything. *Automatically proceed to Turn D.*
 
 ---
 
 ### Token count reporting (TURN D)
 
-After delivering Turn C ZIPs, report a count table to the user so they can cross-check the import. Count **unique token paths** (one token = one line item in Figma's variable panel, regardless of how many modes it has). Do not multiply by mode count.
+After delivering the ZIP, report a count table. Count **unique token paths** (not multiplied by modes).
 
-Example format:
+Example:
 ```
 TOKENS GENERATED
 ══════════════════════════════════
 Collection          Tokens
 ──────────────────────────────────
-Primitives          142
-Theme               87
-Responsive          54
-Density             14
+Primitives          309
+Semantic            94
+Responsive          41
+Density             18
 Layout              5
-Effects             18
-Typography          72
-Semantic            48       (4-Tier only)
-Component Colors    186
-Component Dimensions 28
+Effects             24
+Typography          68
+Component Colors    103
+Component Dimensions 32
 ──────────────────────────────────
-Total               654
+Total               694
 ══════════════════════════════════
 ```
-Tell the user: "These counts reflect unique tokens (one per row in Figma), not multiplied by modes."
 
 ### Mode file naming (critical — no "Value" names)
 - Primitives: `primitives.tokens.json` with `"modeName": "primitives"`

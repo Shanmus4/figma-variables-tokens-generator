@@ -1,5 +1,7 @@
 # Scoping Rules Reference
 
+> [!NOTE]
+> **Scopes are auto-derived by `generator_core.py`'s `get_scope()` function.** This file is kept as architectural reference. The AI does NOT need to manually pass scopes unless overriding for custom tokens with unusual paths. All `build_*()` methods handle scoping automatically.
 ## The Universal Scoping Rule
 
 **ALL tokens in ALL collections receive semantically correct scopes via `get_scope()`.** There are no exceptions. This includes Primitives, Responsive, Density, and every other parent collection.
