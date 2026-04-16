@@ -526,13 +526,17 @@ async function generateTextStyles(variableMap, existingNames) {
   const TYPO_PROPS = new Set(['fontsize', 'lineheight', 'letterspacing', 'fontfamily', 'fontweight'])
 
   for (const key of Object.keys(variableMap)) {
-    if (!key.startsWith('Typography/')) continue
-    const rest = key.slice('Typography/'.length) // e.g. "display/fontsize"
-    const parts = rest.split('/')
-    if (parts.length < 2) continue
-    const prop = parts[parts.length - 1]
+    const lowerKey = key.toLowerCase()
+    if (!lowerKey.startsWith('typography/')) continue
+    
+    const parts = key.split('/')
+    if (parts.length < 3) continue // Expect Typography/group/prop
+    
+    const prop = parts[parts.length - 1].toLowerCase()
     if (!TYPO_PROPS.has(prop)) continue
-    const groupName = parts.slice(0, -1).join('/') // supports nested like "display" or "button/lg"
+    
+    // Group name: everything between "Typography" and the property
+    const groupName = parts.slice(1, -1).join('/')
     if (!groups[groupName]) groups[groupName] = {}
     groups[groupName][prop] = variableMap[key]
   }
@@ -622,13 +626,16 @@ async function generateEffectStyles(variableMap, existingNames) {
   const SHADOW_PROPS = new Set(['color', 'x', 'y', 'blur', 'spread'])
 
   for (const key of Object.keys(variableMap)) {
-    if (!key.startsWith('Effects/shadow/')) continue
-    const rest = key.slice('Effects/shadow/'.length) // e.g. "sm/color"
-    const parts = rest.split('/')
-    if (parts.length < 2) continue
-    const prop = parts[parts.length - 1]
+    const lowerKey = key.toLowerCase()
+    if (!lowerKey.startsWith('effects/shadow/')) continue
+    
+    const parts = key.split('/')
+    if (parts.length < 4) continue // Effects/shadow/size/prop
+    
+    const prop = parts[parts.length - 1].toLowerCase()
     if (!SHADOW_PROPS.has(prop)) continue
-    const sizeName = parts.slice(0, -1).join('/') // "sm"
+    
+    const sizeName = parts.slice(2, -1).join('/') // Everything after "Effects/shadow/"
     if (!shadowGroups[sizeName]) shadowGroups[sizeName] = {}
     shadowGroups[sizeName][prop] = variableMap[key]
   }
@@ -692,9 +699,14 @@ async function generateEffectStyles(variableMap, existingNames) {
   // ── Blur Styles ──
   // Group: Effects/blur/sm, Effects/blur/md, etc. (single values, not nested)
   for (const key of Object.keys(variableMap)) {
-    if (!key.startsWith('Effects/blur/')) continue
-    const rest = key.slice('Effects/blur/'.length) // e.g. "sm"
-    if (rest.includes('/')) continue // skip if it's deeper nested
+    const lowerKey = key.toLowerCase()
+    if (!lowerKey.startsWith('effects/blur/')) continue
+    
+    const parts = key.split('/')
+    if (parts.length < 3) continue // Effects/blur/sm
+    if (parts.length > 3) continue // skip if it's deeper nested (consistent with previous behavior)
+
+    const rest = parts[2]
 
     const styleName = `Blur/blur-${rest}`
     if (existingNames.has(styleName)) {
@@ -735,10 +747,16 @@ async function generateGridStyles(variableMap, existingNames) {
   const layoutColl = localCollections.find(c => c.name === 'Layout')
   if (!layoutColl) return 0
 
+  function findVarCaseInsensitively(fullPath) {
+    const lower = fullPath.toLowerCase()
+    const match = Object.keys(variableMap).find(k => k.toLowerCase() === lower)
+    return match ? variableMap[match] : null
+  }
+
   // Token paths in Layout: column/count, column/margin, column/gutter
-  const countVarId = variableMap['Layout/column/count']
-  const marginVarId = variableMap['Layout/column/margin']
-  const gutterVarId = variableMap['Layout/column/gutter']
+  const countVarId = findVarCaseInsensitively('Layout/column/count')
+  const marginVarId = findVarCaseInsensitively('Layout/column/margin')
+  const gutterVarId = findVarCaseInsensitively('Layout/column/gutter')
 
   if (!countVarId && !marginVarId && !gutterVarId) return 0
 
