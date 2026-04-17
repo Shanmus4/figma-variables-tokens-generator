@@ -28,7 +28,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           name: Figma Variables Tokens Generator ${{ github.ref_name }}
-          body: "Automated build of the Figma Variables Tokens Generator Skill and Plugin."
           files: |
             figma-variables-tokens-generator.zip
             token-import-plugin-figma.zip
