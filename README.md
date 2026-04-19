@@ -7,7 +7,9 @@ This project consists of two core components working in tandem to automate the c
 
 ## Demonstration
 
-<video src="./demo-small.mp4" controls="controls" width="100%"></video>
+https://github.com/user-attachments/assets/36e67653-4a3a-4b70-91e7-50ca7e6dafb6
+
+
 
 ---
 
